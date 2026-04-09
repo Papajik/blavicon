@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Blavicon Planner</title>
+    <meta
+      name="description"
+      content="Statický festivalový planner pro Blavicon s výběrem událostí, persistencí přes cookie a sdílením plánu."
+    >
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%231f6b57'/%3E%3Cpath d='M18 16h28a4 4 0 0 1 4 4v24a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4V20a4 4 0 0 1 4-4Z' fill='%23f8f3e7'/%3E%3Cpath d='M22 24h20M22 32h20M22 40h12' stroke='%231f6b57' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E"
+    >
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="brand-block">
+          <p class="eyebrow">Festival planner</p>
+          <h1>Blavicon Planner</h1>
+          <p class="brand-copy">
+            Vyber si akce, hlídej další bod programu a pošli svůj plán dál jedním odkazem.
+          </p>
+        </div>
+
+        <div class="toolbar-card">
+          <div class="toolbar-row">
+            <div class="toolbar-group">
+              <span class="toolbar-label">Den</span>
+              <div id="day-tabs" class="day-tabs" role="tablist" aria-label="Výběr dne"></div>
+            </div>
+
+            <div class="toolbar-group toolbar-group-time">
+              <span class="toolbar-label">Aktuálně v Praze</span>
+              <div class="time-display" aria-live="polite">
+                <strong id="clock-time" class="time-display-value"></strong>
+                <span id="clock-date" class="time-display-copy"></span>
+              </div>
+            </div>
+
+            <div class="toolbar-group toolbar-group-actions">
+              <span class="toolbar-label">Akce</span>
+              <div class="action-row">
+                <button id="share-toggle-button" class="primary-button" type="button">Sdílet plán</button>
+                <button id="restore-defaults-button" class="secondary-button" type="button">Výchozí plán</button>
+                <button id="clear-selection-button" class="ghost-button" type="button">Vymazat</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="notice" class="notice" aria-live="polite"></div>
+        </div>
+      </header>
+
+      <main class="content-grid">
+        <section class="overview-section" aria-labelledby="overview-heading">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Rychlý přehled</p>
+              <h2 id="overview-heading">Co je teď a co následuje</h2>
+            </div>
+            <p id="plan-source" class="plan-source"></p>
+          </div>
+
+          <div id="overview-cards" class="overview-cards"></div>
+        </section>
+
+        <section id="share-panel" class="share-panel" hidden aria-labelledby="share-heading">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Sdílení</p>
+              <h2 id="share-heading">Export a import plánu</h2>
+            </div>
+          </div>
+
+          <div class="share-grid">
+            <div class="share-card">
+              <label class="field-label" for="share-code">Kód plánu</label>
+              <div class="field-row">
+                <input id="share-code" class="field-input" type="text" readonly>
+                <button id="copy-code-button" class="secondary-button" type="button">Kopírovat</button>
+              </div>
+            </div>
+
+            <div class="share-card">
+              <label class="field-label" for="share-link">Sdílecí odkaz</label>
+              <div class="field-row">
+                <input id="share-link" class="field-input" type="text" readonly>
+                <button id="copy-link-button" class="secondary-button" type="button">Kopírovat</button>
+              </div>
+            </div>
+
+            <div class="share-card share-card-import">
+              <label class="field-label" for="import-input">Import kódu nebo celého odkazu</label>
+              <div class="field-row">
+                <input
+                  id="import-input"
+                  class="field-input"
+                  type="text"
+                  placeholder="v1.... nebo https://.../?plan=v1...."
+                >
+                <button id="import-button" class="primary-button" type="button">Načíst</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="itinerary-section" aria-labelledby="itinerary-heading">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Tvůj den</p>
+              <h2 id="itinerary-heading">Vybraný itinerář</h2>
+            </div>
+          </div>
+          <div id="itinerary-content" class="itinerary-content"></div>
+        </section>
+
+        <section class="schedule-section" aria-labelledby="schedule-heading">
+          <div class="section-heading schedule-heading">
+            <div>
+              <p class="section-kicker">Celý program</p>
+              <h2 id="schedule-heading">Program podle scén</h2>
+            </div>
+            <p class="schedule-note">
+              Horizontálně posouvej podle potřeby, čas vlevo zůstává vidět. Na malý blok klepni pro detail. Data jsou přepsaná ze screenshotu a jdou upravit v
+              <code>data/schedule.js</code>.
+            </p>
+          </div>
+          <div id="schedule-content" class="schedule-content"></div>
+        </section>
+      </main>
+    </div>
+
+    <div id="event-detail-backdrop" class="event-detail-backdrop" hidden></div>
+    <aside
+      id="event-detail-panel"
+      class="event-detail-panel"
+      hidden
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="event-detail-title"
+    >
+      <div id="event-detail-content"></div>
+    </aside>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
