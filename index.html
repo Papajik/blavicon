@@ -32,21 +32,27 @@
               <div id="day-tabs" class="day-tabs" role="tablist" aria-label="Výběr dne"></div>
             </div>
 
-            <div class="toolbar-group toolbar-group-time">
-              <span class="toolbar-label">Aktuálně v Praze</span>
-              <div class="time-display" aria-live="polite">
-                <strong id="clock-time" class="time-display-value"></strong>
-                <span id="clock-date" class="time-display-copy"></span>
-              </div>
-            </div>
-
             <div class="toolbar-group toolbar-group-actions">
-              <span class="toolbar-label">Akce</span>
-              <div class="action-row">
-                <button id="share-toggle-button" class="primary-button" type="button">Sdílet plán</button>
-                <button id="restore-defaults-button" class="secondary-button" type="button">Výchozí plán</button>
-                <button id="clear-selection-button" class="ghost-button" type="button">Vymazat</button>
-              </div>
+              <span class="toolbar-label">Plán</span>
+              <button
+                id="plan-actions-button"
+                class="toolbar-link-button"
+                type="button"
+                aria-haspopup="dialog"
+                aria-controls="plan-actions-panel"
+                aria-expanded="false"
+              >
+                Sdílení a nastavení
+              </button>
+              <a
+                id="map-link"
+                class="toolbar-link-button"
+                href="./data/mapa.jpg"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Zobrazit mapu
+              </a>
             </div>
           </div>
 
@@ -61,50 +67,10 @@
               <p class="section-kicker">Rychlý přehled</p>
               <h2 id="overview-heading">Co je teď a co následuje</h2>
             </div>
-            <p id="plan-source" class="plan-source"></p>
           </div>
 
+          <div id="overview-meta" class="overview-meta" aria-live="polite"></div>
           <div id="overview-cards" class="overview-cards"></div>
-        </section>
-
-        <section id="share-panel" class="share-panel" hidden aria-labelledby="share-heading">
-          <div class="section-heading">
-            <div>
-              <p class="section-kicker">Sdílení</p>
-              <h2 id="share-heading">Export a import plánu</h2>
-            </div>
-          </div>
-
-          <div class="share-grid">
-            <div class="share-card">
-              <label class="field-label" for="share-code">Kód plánu</label>
-              <div class="field-row">
-                <input id="share-code" class="field-input" type="text" readonly>
-                <button id="copy-code-button" class="secondary-button" type="button">Kopírovat</button>
-              </div>
-            </div>
-
-            <div class="share-card">
-              <label class="field-label" for="share-link">Sdílecí odkaz</label>
-              <div class="field-row">
-                <input id="share-link" class="field-input" type="text" readonly>
-                <button id="copy-link-button" class="secondary-button" type="button">Kopírovat</button>
-              </div>
-            </div>
-
-            <div class="share-card share-card-import">
-              <label class="field-label" for="import-input">Import kódu nebo celého odkazu</label>
-              <div class="field-row">
-                <input
-                  id="import-input"
-                  class="field-input"
-                  type="text"
-                  placeholder="v1.... nebo https://.../?plan=v1...."
-                >
-                <button id="import-button" class="primary-button" type="button">Načíst</button>
-              </div>
-            </div>
-          </div>
         </section>
 
         <section class="itinerary-section" aria-labelledby="itinerary-heading">
@@ -123,15 +89,67 @@
               <p class="section-kicker">Celý program</p>
               <h2 id="schedule-heading">Program podle scén</h2>
             </div>
-            <p class="schedule-note">
-              Horizontálně posouvej podle potřeby, čas vlevo zůstává vidět. Na malý blok klepni pro detail. Data jsou přepsaná ze screenshotu a jdou upravit v
-              <code>data/schedule.js</code>.
-            </p>
           </div>
           <div id="schedule-content" class="schedule-content"></div>
         </section>
       </main>
     </div>
+
+    <div id="plan-actions-backdrop" class="plan-actions-backdrop" hidden></div>
+    <aside
+      id="plan-actions-panel"
+      class="plan-actions-panel"
+      hidden
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="plan-actions-title"
+    >
+      <div class="plan-actions-card">
+        <button class="plan-actions-close" type="button" data-close-plan-actions aria-label="Zavřít nabídku plánu">
+          ×
+        </button>
+        <p class="section-kicker">Plán</p>
+        <h2 id="plan-actions-title" class="plan-actions-title">Sdílení a nastavení</h2>
+        <p class="plan-actions-copy">Správa sdílení, importu a rychlých akcí nad vybraným plánem.</p>
+
+        <div class="share-grid">
+          <div class="share-card">
+            <label class="field-label" for="share-code">Kód plánu</label>
+            <div class="field-row">
+              <input id="share-code" class="field-input" type="text" readonly>
+              <button id="copy-code-button" class="secondary-button" type="button">Kopírovat</button>
+            </div>
+          </div>
+
+          <div class="share-card">
+            <label class="field-label" for="share-link">Sdílecí odkaz</label>
+            <div class="field-row">
+              <input id="share-link" class="field-input" type="text" readonly>
+              <button id="copy-link-button" class="secondary-button" type="button">Kopírovat</button>
+            </div>
+          </div>
+
+          <div class="share-card share-card-import">
+            <label class="field-label" for="import-input">Import kódu nebo celého odkazu</label>
+            <div class="field-row">
+              <input
+                id="import-input"
+                class="field-input"
+                type="text"
+                placeholder="v2.... nebo odkaz s ?plan=v2...."
+              >
+              <button id="import-button" class="primary-button" type="button">Načíst</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="plan-actions-row">
+          <button id="restore-defaults-button" class="secondary-button" type="button">Výchozí plán</button>
+          <button id="clear-selection-button" class="ghost-button" type="button">Vymazat</button>
+          <button class="ghost-button" type="button" data-close-plan-actions>Zavřít</button>
+        </div>
+      </div>
+    </aside>
 
     <div id="event-detail-backdrop" class="event-detail-backdrop" hidden></div>
     <aside

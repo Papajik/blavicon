@@ -20,6 +20,7 @@ const TIMELINE_HEIGHT = (SCHEDULE_END_MINUTES - SCHEDULE_START_MINUTES) * TIMELI
 const festivalDayOrder = meta.days.map((day) => day.id);
 const isoWeekdayByDayId = { thu: 4, fri: 5, sat: 6 };
 const isoWeekdayByShortName = { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 7 };
+const MAP_URL = "./data/mapa.jpg";
 
 const pragueNowFormatter = new Intl.DateTimeFormat("en-GB", {
   timeZone: meta.timezone,
@@ -33,13 +34,6 @@ const pragueNowFormatter = new Intl.DateTimeFormat("en-GB", {
   hourCycle: "h23"
 });
 
-const pragueDisplayDateFormatter = new Intl.DateTimeFormat("cs-CZ", {
-  timeZone: meta.timezone,
-  weekday: "short",
-  day: "2-digit",
-  month: "2-digit"
-});
-
 const typeMeta = {
   concert: { label: "Koncert", colorVar: "--type-concert" },
   performance: { label: "Představení", colorVar: "--type-performance" },
@@ -50,13 +44,12 @@ const typeMeta = {
 
 const refs = {
   dayTabs: document.querySelector("#day-tabs"),
-  clockTime: document.querySelector("#clock-time"),
-  clockDate: document.querySelector("#clock-date"),
   notice: document.querySelector("#notice"),
+  overviewMeta: document.querySelector("#overview-meta"),
   overviewCards: document.querySelector("#overview-cards"),
-  planSource: document.querySelector("#plan-source"),
-  sharePanel: document.querySelector("#share-panel"),
-  shareToggleButton: document.querySelector("#share-toggle-button"),
+  planActionsButton: document.querySelector("#plan-actions-button"),
+  planActionsBackdrop: document.querySelector("#plan-actions-backdrop"),
+  planActionsPanel: document.querySelector("#plan-actions-panel"),
   restoreDefaultsButton: document.querySelector("#restore-defaults-button"),
   clearSelectionButton: document.querySelector("#clear-selection-button"),
   shareCode: document.querySelector("#share-code"),
@@ -65,6 +58,7 @@ const refs = {
   copyLinkButton: document.querySelector("#copy-link-button"),
   importInput: document.querySelector("#import-input"),
   importButton: document.querySelector("#import-button"),
+  mapLink: document.querySelector("#map-link"),
   itineraryContent: document.querySelector("#itinerary-content"),
   scheduleContent: document.querySelector("#schedule-content"),
   eventDetailBackdrop: document.querySelector("#event-detail-backdrop"),
@@ -82,7 +76,7 @@ const state = {
   notice: { kind: "", text: "" },
   planSource: "Výchozí plán",
   selectedEventIds: new Set(defaultSelectedIds),
-  sharePanelOpen: false,
+  planActionsOpen: false,
   activeEventId: null
 };
 
@@ -122,8 +116,12 @@ function initialize() {
 
 function bindStaticEvents() {
   refs.dayTabs.addEventListener("click", handleDayTabClick);
-  refs.scheduleContent.addEventListener("click", handleScheduleClick);
-  refs.shareToggleButton.addEventListener("click", handleShareToggle);
+  refs.overviewCards.addEventListener("click", handleEventCardClick);
+  refs.itineraryContent.addEventListener("click", handleEventCardClick);
+  refs.scheduleContent.addEventListener("click", handleEventCardClick);
+  refs.planActionsButton.addEventListener("click", handlePlanActionsToggle);
+  refs.planActionsBackdrop.addEventListener("click", closePlanActions);
+  refs.planActionsPanel.addEventListener("click", handlePlanActionsPanelClick);
   refs.restoreDefaultsButton.addEventListener("click", handleRestoreDefaults);
   refs.clearSelectionButton.addEventListener("click", handleClearSelection);
   refs.eventDetailBackdrop.addEventListener("click", closeEventDetail);
@@ -131,6 +129,7 @@ function bindStaticEvents() {
   refs.copyCodeButton.addEventListener("click", () => handleCopy(refs.shareCode, "Kód plánu zkopírován."));
   refs.copyLinkButton.addEventListener("click", () => handleCopy(refs.shareLink, "Sdílecí odkaz zkopírován."));
   refs.importButton.addEventListener("click", handleImport);
+  refs.mapLink.href = MAP_URL;
   refs.importInput.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -142,10 +141,9 @@ function bindStaticEvents() {
 
 function render() {
   state.now = getPragueNow();
-  renderClock();
   renderDayTabs();
   renderOverview();
-  renderSharePanel();
+  renderPlanActions();
   renderItinerary();
   renderSchedule();
   renderEventDetail();
@@ -160,11 +158,6 @@ function startClock() {
   clockTimer = window.setInterval(() => {
     render();
   }, 30000);
-}
-
-function renderClock() {
-  refs.clockTime.textContent = state.now.timeString;
-  refs.clockDate.textContent = state.now.displayDate;
 }
 
 function renderDayTabs() {
@@ -193,87 +186,76 @@ function renderOverview() {
   const festivalCalendar = getFestivalCalendar(state.now);
   const conflictIds = getConflictIds(selectedEvents);
   const todayLabel = dayMap.get(state.activeDayId)?.label ?? state.activeDayId;
-
-  const currentCard = dayTimeline.isToday
-    ? `
-      <article>
-        <p class="card-label">Právě teď</p>
-        ${
-          dayTimeline.currentEvents.length
-            ? `
-              <h3 class="card-title">${escapeHtml(dayTimeline.currentEvents[0].title)}</h3>
-              <p class="card-time">${formatTimeRange(dayTimeline.currentEvents[0])}</p>
-              <p class="card-copy">
-                ${escapeHtml(venueMap.get(dayTimeline.currentEvents[0].venueId)?.label ?? "")}
-                ${dayTimeline.currentEvents.length > 1 ? ` a ještě ${dayTimeline.currentEvents.length - 1} další vybraná akce` : ""}
-              </p>
-            `
-            : `
-              <h3 class="card-title">Nic vybraného neběží</h3>
-              <p class="card-time">${escapeHtml(state.now.timeString)}</p>
-              <p class="card-copy">Dnes sleduješ ${escapeHtml(todayLabel.toLowerCase())} podle času v Praze.</p>
-            `
-        }
-      </article>
-    `
-    : "";
-
-  const nextCard = nextSelection
-    ? `
-      <article>
-        <p class="card-label">Další</p>
-        <h3 class="card-title">${escapeHtml(nextSelection.event.title)}</h3>
-        <p class="card-time">${escapeHtml(formatFestivalDayLabel(nextSelection.event.dayId, festivalCalendar))} • ${formatTimeRange(nextSelection.event)}</p>
-        <p class="card-copy">
-          ${escapeHtml(venueMap.get(nextSelection.event.venueId)?.label ?? "")}
-          ${nextSelection.relativeLabel ? ` • ${escapeHtml(nextSelection.relativeLabel)}` : ""}
-        </p>
-      </article>
-    `
+  const currentEvent = dayTimeline.currentEvents[0] ?? null;
+  const currentCard = currentEvent
+    ? buildOverviewCard({
+        label: "Právě teď",
+        event: currentEvent,
+        timeText: formatTimeRange(currentEvent),
+        copyText: `${venueMap.get(currentEvent.venueId)?.label ?? ""}${dayTimeline.currentEvents.length > 1 ? ` a ještě ${dayTimeline.currentEvents.length - 1} další vybraná akce` : ""}`
+      })
     : `
-      <article>
-        <p class="card-label">Další</p>
-        <h3 class="card-title">Pro tenhle den hotovo</h3>
-        <p class="card-time">Žádná další vybraná akce</p>
-        <p class="card-copy">Můžeš přepnout na jiný den nebo upravit výběr.</p>
+      <article class="overview-card">
+        <p class="card-label">Právě teď</p>
+        <h3 class="card-title">${dayTimeline.isToday ? "Nic vybraného neběží" : `Teď neběží ${escapeHtml(todayLabel.toLowerCase())}`}</h3>
+        <p class="card-copy">${dayTimeline.isToday ? "Další vybranou akci najdeš hned vedle nebo níž v itineráři." : "Aktivní den si můžeš projít dopředu a otevřít si detail z dalších karet."}</p>
       </article>
     `;
+
+  const nextCard = nextSelection
+    ? buildOverviewCard({
+        label: "Další",
+        event: nextSelection.event,
+        timeText: `${formatFestivalDayLabel(nextSelection.event.dayId, festivalCalendar)} • ${formatTimeRange(nextSelection.event)}`,
+        copyText: `${venueMap.get(nextSelection.event.venueId)?.label ?? ""}${nextSelection.relativeLabel ? ` • ${nextSelection.relativeLabel}` : ""}`
+      })
+    : `
+      <article class="overview-card">
+        <p class="card-label">Další</p>
+        <h3 class="card-title">Pro tenhle plán hotovo</h3>
+        <p class="card-copy">Žádná další vybraná akce už nenásleduje.</p>
+      </article>
+    `;
+
+  refs.overviewMeta.innerHTML = `
+    <span class="summary-pill">${escapeHtml(todayLabel)} • ${pluralize(selectedEvents.length, ["1 vybraná událost", "2 vybrané události", "5 vybraných událostí"])}</span>
+    <span class="summary-pill">${pluralize(state.selectedEventIds.size, ["1 bod celkem", "2 body celkem", "5 bodů celkem"])}</span>
+    <span class="summary-pill ${conflictIds.size ? "is-warning" : ""}">${conflictIds.size ? pluralize(conflictIds.size, ["1 kolize", "2 kolize", "5 kolizí"]) : "Bez kolizí"}</span>
+    <span class="summary-pill is-muted">${escapeHtml(state.planSource)}</span>
+  `;
 
   refs.overviewCards.innerHTML = `
     ${currentCard}
     ${nextCard}
-    <article>
-      <p class="card-label">Výběr</p>
-      <h3 class="card-title">${pluralize(selectedEvents.length, ["1 událost", "2 události", "5 událostí"])} v ${escapeHtml(todayLabel.toLowerCase())}</h3>
-      <p class="card-time">${state.selectedEventIds.size} celkem</p>
-      <div class="card-badge-row">
-        <span class="chip is-highlight">${pluralize(countSelectedByType("concert", state.activeDayId), ["1 koncert", "2 koncerty", "5 koncertů"])}</span>
-        <span class="chip">${pluralize(countSelectedByType("talk", state.activeDayId), ["1 přednáška", "2 přednášky", "5 přednášek"])}</span>
-      </div>
-    </article>
-    <article>
-      <p class="card-label">Kolize</p>
-      <h3 class="card-title">${conflictIds.size ? `${pluralize(conflictIds.size, ["1 konfliktní událost", "2 konfliktní události", "5 konfliktních událostí"])}` : "Bez kolizí"}</h3>
-      <p class="card-copy">
-        ${conflictIds.size ? "Překryvy nechávám označené červeně v itineráři i v programu." : "Vybraný plán je pro tenhle den časově čistý."}
-      </p>
-      <div class="card-badge-row">
-        <span class="chip ${conflictIds.size ? "is-warning" : ""}">${escapeHtml(state.planSource)}</span>
-        <span class="chip">${escapeHtml(todayLabel)}</span>
-      </div>
-    </article>
   `;
-
-  refs.planSource.textContent = `${todayLabel} • ${state.planSource}`;
 }
 
-function renderSharePanel() {
-  refs.shareToggleButton.textContent = state.sharePanelOpen ? "Skrýt sdílení" : "Sdílet plán";
-  refs.sharePanel.hidden = !state.sharePanelOpen;
+function buildOverviewCard({ label, event, timeText, copyText }) {
+  return `
+    <article
+      class="overview-card is-interactive"
+      data-open-event-id="${event.id}"
+      tabindex="0"
+      role="button"
+      aria-label="${escapeHtml(`Detail události ${event.title}`)}"
+    >
+      <p class="card-label">${escapeHtml(label)}</p>
+      <h3 class="card-title">${escapeHtml(event.title)}</h3>
+      <p class="card-time">${escapeHtml(timeText)}</p>
+      <p class="card-copy">${escapeHtml(copyText)}</p>
+    </article>
+  `;
+}
+
+function renderPlanActions() {
+  refs.planActionsButton.setAttribute("aria-expanded", String(state.planActionsOpen));
+  refs.planActionsBackdrop.hidden = !state.planActionsOpen;
+  refs.planActionsPanel.hidden = !state.planActionsOpen;
 
   const planCode = encodePlan(state.selectedEventIds);
   refs.shareCode.value = planCode;
   refs.shareLink.value = buildShareLink(planCode);
+  syncModalBodyState();
 }
 
 function renderItinerary() {
@@ -286,7 +268,7 @@ function renderItinerary() {
       <div class="empty-state">
         <h3 class="itinerary-title">Pro tenhle den zatím nic vybraného není</h3>
         <p class="itinerary-subcopy">
-          Klikni dole v programu na tlačítko <strong>Chci vidět</strong>, nebo se vrať k původnímu plánu.
+          Přidej si něco dole v programu, nebo vrať výchozí plán.
         </p>
       </div>
     `;
@@ -312,7 +294,13 @@ function renderItinerary() {
           }
 
           return `
-            <article class="itinerary-card">
+            <article
+              class="itinerary-card"
+              data-open-event-id="${event.id}"
+              tabindex="0"
+              role="button"
+              aria-label="${escapeHtml(`Detail události ${event.title}`)}"
+            >
               <div class="itinerary-title-row">
                 <div>
                   <h3 class="itinerary-title">${escapeHtml(event.title)}</h3>
@@ -354,7 +342,7 @@ function renderSchedule() {
       <div class="schedule-board" style="--timeline-height: ${TIMELINE_HEIGHT}px; --venue-count: ${meta.venues.length};">
         <div class="schedule-axis-head" style="grid-column: 1; grid-row: 1;">
           <h3 class="venue-heading">Čas</h3>
-          <p class="venue-note">09:00 nahoře, 23:00 dole</p>
+          <p class="venue-note">09:00 nahoře, 24:00 dole</p>
         </div>
 
         ${meta.venues
@@ -456,22 +444,20 @@ function renderSchedule() {
 
 function renderEventDetail() {
   const activeEvent = state.activeEventId ? eventMap.get(state.activeEventId) : null;
-  if (!activeEvent || activeEvent.dayId !== state.activeDayId) {
-    document.body.classList.remove("has-event-detail");
+  if (!activeEvent) {
     refs.eventDetailBackdrop.hidden = true;
     refs.eventDetailPanel.hidden = true;
     refs.eventDetailContent.innerHTML = "";
-    if (activeEvent && activeEvent.dayId !== state.activeDayId) {
-      state.activeEventId = null;
-    }
+    syncModalBodyState();
     return;
   }
 
   const selected = state.selectedEventIds.has(activeEvent.id);
   const type = typeMeta[activeEvent.type] ?? typeMeta.talk;
-  const selectedForDay = getSelectedEvents(state.activeDayId);
+  const selectedForDay = getSelectedEvents(activeEvent.dayId);
   const conflictIds = getConflictIds(selectedForDay);
-  const dayTimeline = getDayTimelineState(state.activeDayId, state.now);
+  const dayTimeline = getDayTimelineState(activeEvent.dayId, state.now);
+  const globalNextEventId = getGlobalNextSelectedEvent(state.now)?.event.id ?? null;
   const chips = [];
 
   if (selected) {
@@ -480,7 +466,7 @@ function renderEventDetail() {
 
   if (dayTimeline.currentEvents.some((event) => event.id === activeEvent.id)) {
     chips.push('<span class="chip is-highlight">Právě běží</span>');
-  } else if (dayTimeline.nextEvent?.id === activeEvent.id) {
+  } else if (dayTimeline.nextEvent?.id === activeEvent.id || globalNextEventId === activeEvent.id) {
     chips.push('<span class="chip">Další v plánu</span>');
   }
 
@@ -516,9 +502,9 @@ function renderEventDetail() {
     </div>
   `;
 
-  document.body.classList.add("has-event-detail");
   refs.eventDetailBackdrop.hidden = false;
   refs.eventDetailPanel.hidden = false;
+  syncModalBodyState();
 }
 
 function buildScheduleTimeMarkers() {
@@ -558,7 +544,7 @@ function handleDayTabClick(event) {
   render();
 }
 
-function handleScheduleClick(event) {
+function handleEventCardClick(event) {
   const toggleButton = event.target.closest(".event-toggle[data-event-id]");
   if (toggleButton) {
     toggleEventSelection(toggleButton.dataset.eventId);
@@ -571,6 +557,13 @@ function handleScheduleClick(event) {
   }
 
   openEventDetail(eventCard.dataset.openEventId);
+}
+
+function handlePlanActionsPanelClick(event) {
+  const closeButton = event.target.closest("[data-close-plan-actions]");
+  if (closeButton) {
+    closePlanActions();
+  }
 }
 
 function handleEventDetailClick(event) {
@@ -587,33 +580,46 @@ function handleEventDetailClick(event) {
 }
 
 function handleDocumentKeydown(event) {
-  if (event.key === "Escape" && state.activeEventId) {
-    closeEventDetail();
-    return;
+  if (event.key === "Escape") {
+    if (state.planActionsOpen) {
+      closePlanActions();
+      return;
+    }
+
+    if (state.activeEventId) {
+      closeEventDetail();
+      return;
+    }
   }
 
   if ((event.key === "Enter" || event.key === " ") && document.activeElement?.matches?.("[data-open-event-id]")) {
     event.preventDefault();
     openEventDetail(document.activeElement.dataset.openEventId);
+    return;
   }
 }
 
-function handleShareToggle() {
-  state.sharePanelOpen = !state.sharePanelOpen;
+function handlePlanActionsToggle() {
+  state.planActionsOpen = !state.planActionsOpen;
+  if (state.planActionsOpen) {
+    state.activeEventId = null;
+  }
   render();
 }
 
 function handleRestoreDefaults() {
   state.selectedEventIds = new Set(defaultSelectedIds);
   state.planSource = "Výchozí plán";
+  state.planActionsOpen = false;
   persistCurrentPlan();
-  showNotice("Vrátil jsem původní zeleně označený plán.", "info");
+  showNotice("Vrátil jsem výchozí plán.", "info");
   render();
 }
 
 function handleClearSelection() {
   state.selectedEventIds = new Set();
   state.planSource = "Ruční výběr";
+  state.planActionsOpen = false;
   persistCurrentPlan();
   showNotice("Výběr je prázdný.", "info");
   render();
@@ -628,7 +634,7 @@ function handleImport() {
 
   const extractedCode = extractPlanCode(rawValue);
   if (!extractedCode) {
-    showNotice("Zadaný text neobsahuje platný parametr plan ani kód ve formátu v1....", "warning");
+    showNotice("Zadaný text neobsahuje platný parametr plan ani kód ve formátu vN....", "warning");
     return;
   }
 
@@ -640,6 +646,7 @@ function handleImport() {
 
   state.selectedEventIds = decoded.selectedEventIds;
   state.planSource = "Ruční import";
+  state.planActionsOpen = false;
   refs.importInput.value = "";
   persistCurrentPlan();
   showNotice("Plán byl naimportovaný.", "info");
@@ -675,8 +682,9 @@ function openEventDetail(eventId) {
     return;
   }
 
+  state.planActionsOpen = false;
   state.activeEventId = eventId;
-  renderEventDetail();
+  render();
 }
 
 function closeEventDetail() {
@@ -685,7 +693,20 @@ function closeEventDetail() {
   }
 
   state.activeEventId = null;
-  renderEventDetail();
+  render();
+}
+
+function closePlanActions() {
+  if (!state.planActionsOpen) {
+    return;
+  }
+
+  state.planActionsOpen = false;
+  render();
+}
+
+function syncModalBodyState() {
+  document.body.classList.toggle("has-modal", Boolean(state.activeEventId || state.planActionsOpen));
 }
 
 function persistCurrentPlan() {
@@ -903,10 +924,6 @@ function getConflictIds(selectedEvents) {
   return conflictIds;
 }
 
-function countSelectedByType(type, dayId) {
-  return getSelectedEvents(dayId).filter((event) => event.type === type).length;
-}
-
 function buildShareLink(planCode) {
   const shareUrl = new URL(window.location.href);
   shareUrl.searchParams.set("plan", planCode);
@@ -990,8 +1007,7 @@ function getPragueNow() {
     minute,
     isoWeekday: isoWeekdayByShortName[parts.weekday],
     dateKey: toDateKey({ year, month, day }),
-    timeString: `${padNumber(hour)}:${padNumber(minute)}`,
-    displayDate: pragueDisplayDateFormatter.format(new Date())
+    timeString: `${padNumber(hour)}:${padNumber(minute)}`
   };
 }
 
