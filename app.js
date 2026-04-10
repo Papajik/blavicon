@@ -7,12 +7,6 @@ const venueMap = new Map(meta.venues.map((venue) => [venue.id, venue]));
 const eventMap = new Map(events.map((event) => [event.id, event]));
 const eventByPlanIndex = new Map(events.map((event) => [event.planIndex, event]));
 const maxPlanIndex = Math.max(...events.map((event) => event.planIndex));
-const supportedPlanVersions = new Set([1, meta.planSchemaVersion]);
-const legacyPlanIndexEventIds = {
-  1: new Map([
-    [47, ["fri-povidani-medovina"]]
-  ])
-};
 const SCHEDULE_START_MINUTES = 9 * 60;
 const SCHEDULE_END_MINUTES = 24 * 60;
 const TIMELINE_MINUTE_HEIGHT = 2;
@@ -795,10 +789,10 @@ function decodePlan(planCode) {
   }
 
   const version = Number.parseInt(versionPart.slice(1), 10);
-  if (!supportedPlanVersions.has(version)) {
+  if (version !== meta.planSchemaVersion) {
     return {
       ok: false,
-      error: `Kód používá verzi ${version}, ale tahle aplikace umí jen verze ${formatSupportedPlanVersions()}.`
+      error: `Kód používá verzi ${version}, ale tahle aplikace umí jen verzi ${meta.planSchemaVersion}.`
     };
   }
 
@@ -819,29 +813,13 @@ function decodePlan(planCode) {
       continue;
     }
 
-    const eventIds = getEventIdsForPlanIndex(planIndex, version);
-    for (const eventId of eventIds) {
-      selectedEventIds.add(eventId);
+    const event = eventByPlanIndex.get(planIndex);
+    if (event) {
+      selectedEventIds.add(event.id);
     }
   }
 
   return { ok: true, selectedEventIds };
-}
-
-function formatSupportedPlanVersions() {
-  return [...supportedPlanVersions]
-    .sort((leftVersion, rightVersion) => leftVersion - rightVersion)
-    .join(" a ");
-}
-
-function getEventIdsForPlanIndex(planIndex, version) {
-  const legacyEventIds = legacyPlanIndexEventIds[version]?.get(planIndex);
-  if (legacyEventIds) {
-    return legacyEventIds;
-  }
-
-  const event = eventByPlanIndex.get(planIndex);
-  return event ? [event.id] : [];
 }
 
 function getEventsForDay(dayId) {
