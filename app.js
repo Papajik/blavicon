@@ -7,8 +7,14 @@ const venueMap = new Map(meta.venues.map((venue) => [venue.id, venue]));
 const eventMap = new Map(events.map((event) => [event.id, event]));
 const eventByPlanIndex = new Map(events.map((event) => [event.planIndex, event]));
 const maxPlanIndex = Math.max(...events.map((event) => event.planIndex));
+const supportedPlanVersions = new Set([1, meta.planSchemaVersion]);
+const legacyPlanIndexEventIds = {
+  1: new Map([
+    [47, ["fri-povidani-medovina"]]
+  ])
+};
 const SCHEDULE_START_MINUTES = 9 * 60;
-const SCHEDULE_END_MINUTES = 23 * 60;
+const SCHEDULE_END_MINUTES = 24 * 60;
 const TIMELINE_MINUTE_HEIGHT = 2;
 const TIMELINE_HEIGHT = (SCHEDULE_END_MINUTES - SCHEDULE_START_MINUTES) * TIMELINE_MINUTE_HEIGHT;
 const festivalDayOrder = meta.days.map((day) => day.id);
@@ -768,10 +774,10 @@ function decodePlan(planCode) {
   }
 
   const version = Number.parseInt(versionPart.slice(1), 10);
-  if (version !== meta.planSchemaVersion) {
+  if (!supportedPlanVersions.has(version)) {
     return {
       ok: false,
-      error: `Kód používá verzi ${version}, ale tahle aplikace umí jen verzi ${meta.planSchemaVersion}.`
+      error: `Kód používá verzi ${version}, ale tahle aplikace umí jen verze ${formatSupportedPlanVersions()}.`
     };
   }
 
@@ -792,13 +798,29 @@ function decodePlan(planCode) {
       continue;
     }
 
-    const event = eventByPlanIndex.get(planIndex);
-    if (event) {
-      selectedEventIds.add(event.id);
+    const eventIds = getEventIdsForPlanIndex(planIndex, version);
+    for (const eventId of eventIds) {
+      selectedEventIds.add(eventId);
     }
   }
 
   return { ok: true, selectedEventIds };
+}
+
+function formatSupportedPlanVersions() {
+  return [...supportedPlanVersions]
+    .sort((leftVersion, rightVersion) => leftVersion - rightVersion)
+    .join(" a ");
+}
+
+function getEventIdsForPlanIndex(planIndex, version) {
+  const legacyEventIds = legacyPlanIndexEventIds[version]?.get(planIndex);
+  if (legacyEventIds) {
+    return legacyEventIds;
+  }
+
+  const event = eventByPlanIndex.get(planIndex);
+  return event ? [event.id] : [];
 }
 
 function getEventsForDay(dayId) {
