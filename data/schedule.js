@@ -12,7 +12,7 @@ export const festivalData = {
     venues: [
       { id: "main-stage", label: "Hlavní stage" },
       { id: "alt-stage", label: "Alternativní stage a tribuny" },
-      { id: "krcmy", label: "Krčmy Husova mlýna" },
+      { id: "krcmy", label: "Krčmy Housova mlýna" },
       { id: "lecture-tent", label: "Přednáškový stan" },
       { id: "teahouse", label: "Čajovna" },
       { id: "info", label: "Infostánek" },
@@ -751,10 +751,10 @@ export const festivalData = {
       planIndex: 62,
       dayId: "sat",
       venueId: "lecture-tent",
-      title: "Výroba perličkové ozdoby do vlasů",
+      title: "Výroba peříčkové ozdoby do vlasů",
       type: "workshop",
       start: "09:00",
-      end: "10:15",
+      end: "10:00",
       defaultSelected: false
     },
     {
@@ -763,9 +763,9 @@ export const festivalData = {
       dayId: "sat",
       venueId: "upper-hall",
       title: "Gwintová školka",
-      type: "tabletop",
-      start: "09:30",
-      end: "10:15",
+      type: "workshop",
+      start: "09:00",
+      end: "10:00",
       defaultSelected: false
     },
     {
@@ -773,10 +773,10 @@ export const festivalData = {
       planIndex: 64,
       dayId: "sat",
       venueId: "krcmy",
-      title: "Alchymie života nejen v Zaklínači",
+      title: "Alchymie života nejen v Zaklínači (EN)",
       type: "talk",
-      start: "10:00",
-      end: "11:00",
+      start: "09:30",
+      end: "10:30",
       defaultSelected: false
     },
     {
@@ -785,9 +785,9 @@ export const festivalData = {
       dayId: "sat",
       venueId: "lecture-tent",
       title: "Ukázka řemesla drátenického",
-      type: "workshop",
-      start: "10:30",
-      end: "12:00",
+      type: "talk",
+      start: "10:00",
+      end: "11:00",
       defaultSelected: true
     },
     {
@@ -797,8 +797,8 @@ export const festivalData = {
       venueId: "alt-stage",
       title: "Blaviconská olympiáda",
       type: "performance",
-      start: "10:30",
-      end: "11:30",
+      start: "10:00",
+      end: "11:00",
       defaultSelected: false
     },
     {
@@ -806,10 +806,21 @@ export const festivalData = {
       planIndex: 67,
       dayId: "sat",
       venueId: "teahouse",
-      title: "RPG oneshot s Kybersovou/Jakubem",
+      title: "RPG oneshot s Kybersovou",
       type: "tabletop",
-      start: "11:30",
-      end: "13:00",
+      start: "09:00",
+      end: "12:30",
+      defaultSelected: false
+    },
+    {
+      id: "sat-rpg-oneshot-jakubem",
+      planIndex: 95,
+      dayId: "sat",
+      venueId: "teahouse",
+      title: "RPG oneshot s Jakubem",
+      type: "tabletop",
+      start: "09:00",
+      end: "12:30",
       defaultSelected: false
     },
     {
@@ -818,9 +829,9 @@ export const festivalData = {
       dayId: "sat",
       venueId: "krcmy",
       title: "Základy improvizace pro larp",
-      type: "performance",
-      start: "11:45",
-      end: "13:00",
+      type: "workshop",
+      start: "10:30",
+      end: "11:30",
       defaultSelected: true
     },
     {
@@ -828,10 +839,10 @@ export const festivalData = {
       planIndex: 69,
       dayId: "sat",
       venueId: "alt-stage",
-      title: "Zacházení s mečem",
+      title: "Zacházení s mečem (EN)",
       type: "workshop",
-      start: "12:15",
-      end: "13:00",
+      start: "11:15",
+      end: "12:15",
       defaultSelected: true
     },
     {
@@ -839,21 +850,21 @@ export const festivalData = {
       planIndex: 70,
       dayId: "sat",
       venueId: "lecture-tent",
-      title: "Šperky z galvanoplastiky",
-      type: "workshop",
-      start: "12:00",
-      end: "13:00",
+      title: "Šperky z galvanoplastiky (EN)",
+      type: "talk",
+      start: "11:00",
+      end: "12:00",
       defaultSelected: false
     },
     {
       id: "sat-havran",
       planIndex: 71,
       dayId: "sat",
-      venueId: "main-stage",
+      venueId: "alt-stage",
       title: "Havran",
       type: "concert",
-      start: "12:45",
-      end: "13:15",
+      start: "12:30",
+      end: "13:00",
       defaultSelected: false
     },
     {
@@ -861,10 +872,10 @@ export const festivalData = {
       planIndex: 72,
       dayId: "sat",
       venueId: "lecture-tent",
-      title: "Výroba tkanic: Hřebenovky a šňůry",
+      title: "Výroba tkanic: Hřebenovky a šňůry z lucetu (EN)",
       type: "workshop",
-      start: "13:00",
-      end: "14:00",
+      start: "12:00",
+      end: "13:00",
       defaultSelected: false
     },
     {
@@ -874,8 +885,8 @@ export const festivalData = {
       venueId: "alt-stage",
       title: "Blaviconská olympiáda",
       type: "performance",
-      start: "13:30",
-      end: "14:45",
+      start: "13:15",
+      end: "14:15",
       defaultSelected: false
     },
     {
@@ -883,21 +894,21 @@ export const festivalData = {
       planIndex: 74,
       dayId: "sat",
       venueId: "krcmy",
-      title: "Jak vyrobit zaklínače s pomocí galvano plastiky",
+      title: "Jak vyrobit Zaklínače s pomocí vědy",
       type: "talk",
-      start: "13:45",
-      end: "15:00",
+      start: "11:30",
+      end: "12:30",
       defaultSelected: false
     },
     {
       id: "sat-cesta-ohne",
       planIndex: 75,
       dayId: "sat",
-      venueId: "info",
+      venueId: "lecture-tent",
       title: "Cesta ohně",
       type: "talk",
-      start: "13:45",
-      end: "14:15",
+      start: "13:00",
+      end: "14:30",
       defaultSelected: false
     },
     {
@@ -905,7 +916,7 @@ export const festivalData = {
       planIndex: 76,
       dayId: "sat",
       venueId: "main-stage",
-      title: "Příběh",
+      title: "Příběhová divadelní scénka",
       type: "performance",
       start: "14:45",
       end: "15:00",
@@ -915,10 +926,10 @@ export const festivalData = {
       id: "sat-jak-vyrobit-zaklinace",
       planIndex: 77,
       dayId: "sat",
-      venueId: "alt-stage",
-      title: "Jak vyrobit zaklínače s pomocí řemesla",
+      venueId: "krcmy",
+      title: "Jak vyrobit Zaklínače s pomocí vědy (EN)",
       type: "talk",
-      start: "15:00",
+      start: "15:15",
       end: "16:15",
       defaultSelected: true
     },
@@ -929,8 +940,8 @@ export const festivalData = {
       venueId: "alt-stage",
       title: "Kalsarikännit",
       type: "concert",
-      start: "15:30",
-      end: "16:00",
+      start: "15:15",
+      end: "16:15",
       defaultSelected: false
     },
     {
@@ -940,7 +951,7 @@ export const festivalData = {
       venueId: "lecture-tent",
       title: "Povídání o medovině",
       type: "talk",
-      start: "15:45",
+      start: "15:15",
       end: "16:15",
       defaultSelected: false
     },
@@ -949,10 +960,21 @@ export const festivalData = {
       planIndex: 80,
       dayId: "sat",
       venueId: "krcmy",
-      title: "Jak se fotit s cosplayi",
+      title: "Jak se fotit v cosplayi",
       type: "talk",
-      start: "16:15",
-      end: "17:00",
+      start: "12:30",
+      end: "13:30",
+      defaultSelected: false
+    },
+    {
+      id: "sat-zaklady-improvizace-2",
+      planIndex: 96,
+      dayId: "sat",
+      venueId: "krcmy",
+      title: "Základy improvizace pro larp",
+      type: "workshop",
+      start: "13:30",
+      end: "14:30",
       defaultSelected: false
     },
     {
@@ -960,8 +982,8 @@ export const festivalData = {
       planIndex: 81,
       dayId: "sat",
       venueId: "lecture-tent",
-      title: "Začátky práce s kůží",
-      type: "workshop",
+      title: "Začátky práce s kůží, materiály a nástroje",
+      type: "talk",
       start: "16:15",
       end: "17:15",
       defaultSelected: false
@@ -973,8 +995,8 @@ export const festivalData = {
       venueId: "krcmy",
       title: "Role uzení v dějinách",
       type: "talk",
-      start: "16:45",
-      end: "17:30",
+      start: "16:15",
+      end: "17:45",
       defaultSelected: false
     },
     {
@@ -984,8 +1006,8 @@ export const festivalData = {
       venueId: "main-stage",
       title: "Arthuan Rebis Trio",
       type: "concert",
-      start: "17:00",
-      end: "17:30",
+      start: "16:30",
+      end: "18:00",
       defaultSelected: false
     },
     {
@@ -996,18 +1018,18 @@ export const festivalData = {
       title: "Práce s kůží – vyrob si klíčenku",
       type: "workshop",
       start: "17:15",
-      end: "18:30",
+      end: "18:15",
       defaultSelected: false
     },
     {
       id: "sat-animace-kcd",
       planIndex: 85,
       dayId: "sat",
-      venueId: "alt-stage",
-      title: "Animace v KCD 2 až na kost",
+      venueId: "krcmy",
+      title: "Animace v KCD 2 až na kost (EN)",
       type: "talk",
-      start: "17:30",
-      end: "18:30",
+      start: "17:45",
+      end: "18:45",
       defaultSelected: true
     },
     {
@@ -1017,8 +1039,8 @@ export const festivalData = {
       venueId: "teahouse",
       title: "O vodních dýmkách",
       type: "talk",
-      start: "18:00",
-      end: "18:45",
+      start: "17:30",
+      end: "19:00",
       defaultSelected: false
     },
     {
@@ -1028,8 +1050,8 @@ export const festivalData = {
       venueId: "alt-stage",
       title: "Ginevra",
       type: "concert",
-      start: "18:30",
-      end: "19:00",
+      start: "18:15",
+      end: "19:15",
       defaultSelected: false
     },
     {
@@ -1048,7 +1070,7 @@ export const festivalData = {
       planIndex: 89,
       dayId: "sat",
       venueId: "main-stage",
-      title: "Příběh",
+      title: "Příběhová divadelní scénka",
       type: "performance",
       start: "21:45",
       end: "22:00",
@@ -1061,8 +1083,19 @@ export const festivalData = {
       venueId: "krcmy",
       title: "Fehu Pagan Folk",
       type: "concert",
-      start: "22:15",
+      start: "22:00",
       end: "23:00",
+      defaultSelected: false
+    },
+    {
+      id: "sat-zachazeni-s-mecem-2",
+      planIndex: 97,
+      dayId: "sat",
+      venueId: "alt-stage",
+      title: "Zacházení s mečem (EN)",
+      type: "workshop",
+      start: "16:15",
+      end: "17:15",
       defaultSelected: false
     }
   ]
