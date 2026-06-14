@@ -1,0 +1,1549 @@
+{
+  "app": {
+    "id": "krumlovske-slavnosti-2026",
+    "title": "Krumlovské slavnosti Planner",
+    "description": "Statický planner pro Krumlovské slavnosti s importem programu z CSV.",
+    "locale": "cs-CZ",
+    "timezone": "Europe/Prague",
+    "planSchemaVersion": 1,
+    "cookieKey": "krumlovske_slavnosti_2026_plan"
+  },
+  "branding": {
+    "eyebrow": "Městské slavnosti",
+    "headline": "Krumlovské slavnosti Planner",
+    "copy": "Program načtený z CSV rozpisu. Vyber si body programu a sdílej vlastní plán."
+  },
+  "assets": {
+    "actions": []
+  },
+  "ui": {
+    "labels": {
+      "event": "Akce",
+      "day": "Den",
+      "shareAndSettings": "Sdílení a nastavení",
+      "shareCode": "Kód plánu",
+      "shareLink": "Sdílecí odkaz",
+      "importPlan": "Import kódu nebo celého odkazu",
+      "importPlaceholder": "v1.... nebo odkaz s ?plan=v1....",
+      "load": "Načíst",
+      "copy": "Kopírovat",
+      "restoreDefaults": "Výchozí plán",
+      "clearSelection": "Vymazat",
+      "close": "Zavřít",
+      "scheduleTime": "Čas",
+      "scheduleTimeNote": "",
+      "scheduleVenueCount": "{count} v programu",
+      "planActionsCopy": "Správa sdílení, importu a rychlých akcí nad vybraným plánem.",
+      "eventDetail": "Detail události",
+      "eventBrowserButton": "Prohlížet další události",
+      "eventBrowserTitle": "Vyber akci",
+      "eventBrowserCopy": "Přepni se na jinou akci z katalogu.",
+      "openCurrentEvent": "Otevřít"
+    },
+    "sections": {
+      "overviewKicker": "Rychlý přehled",
+      "overviewHeading": "Co je teď a co následuje",
+      "itineraryKicker": "Tvůj den",
+      "itineraryHeading": "Vybraný itinerář",
+      "scheduleKicker": "",
+      "scheduleHeading": "Program",
+      "planKicker": "Plán"
+    },
+    "cards": {
+      "current": "Právě teď",
+      "next": "Další"
+    },
+    "badges": {
+      "current": "Právě běží",
+      "next": "Další",
+      "nextInPlan": "Další v plánu",
+      "selected": "Ve tvém plánu",
+      "conflict": "Kolize"
+    },
+    "emptyStates": {
+      "currentNoneToday": "Aktuálně žádná vybraná akce neprobíhá",
+      "currentNoneOtherDay": "Teď neběží {dayLabelLower}",
+      "currentNoneTodayCopy": "Další vybranou akci najdeš hned vedle nebo níž v itineráři.",
+      "currentNoneOtherDayCopy": "Aktivní den si můžeš projít dopředu a otevřít si detail z dalších karet.",
+      "nextDoneTitle": "Pro tenhle plán hotovo",
+      "nextDoneCopy": "Žádná další vybraná akce už nenásleduje.",
+      "itineraryEmptyTitle": "Pro tenhle den zatím nic vybraného není",
+      "itineraryEmptyCopy": "Přidej si něco dole v programu."
+    },
+    "summaries": {
+      "selectedForDay": "{count} vybráno v aktivním dni",
+      "selectedTotal": "{count} bodů celkem",
+      "conflicts": "{count} kolizí",
+      "noConflicts": "Bez kolizí"
+    },
+    "statuses": {
+      "defaultPlan": "Výchozí plán",
+      "sharedLink": "Sdílený odkaz",
+      "restoredCookie": "Obnovené z cookie",
+      "manualImport": "Ruční import",
+      "manualSelection": "Ruční výběr"
+    },
+    "messages": {
+      "sharedPlanLoaded": "Načetl jsem sdílený plán z odkazu.",
+      "defaultsRestored": "Vrátil jsem výchozí plán.",
+      "selectionCleared": "Výběr je prázdný.",
+      "importSuccess": "Plán byl naimportovaný.",
+      "copyCodeSuccess": "Kód plánu zkopírován.",
+      "copyLinkSuccess": "Sdílecí odkaz zkopírován.",
+      "copyFailed": "Kopírování selhalo, ale text zůstal v poli připravený k ručnímu zkopírování.",
+      "importEmpty": "Nejdřív vlož kód plánu nebo celý odkaz.",
+      "importInvalid": "Zadaný text neobsahuje platný parametr plan ani kód ve formátu vN....",
+      "cookieUnavailable": "Cookies jsou zřejmě vypnuté. Výběr zůstává jen do zavření stránky.",
+      "invalidCodeFormat": "Kód plánu není ve správném formátu.",
+      "invalidCodeDecode": "Kód plánu nejde dekódovat.",
+      "versionMismatch": "Kód používá verzi {version}, ale tahle aplikace umí jen verzi {supportedVersion}.",
+      "currentEventBadge": "Probíhá",
+      "upcomingEventBadge": "Nejbližší"
+    },
+    "aria": {
+      "openEventDetail": "Detail události {title}",
+      "addToPlan": "Přidat {title} do plánu",
+      "removeFromPlan": "Odebrat {title} z plánu",
+      "closePlanMenu": "Zavřít nabídku plánu",
+      "closeEventDetail": "Zavřít detail události",
+      "closeEventBrowser": "Zavřít přehled akcí",
+      "openEventCatalog": "Otevřít přehled akcí"
+    }
+  },
+  "schedule": {
+    "dayStart": "09:00",
+    "dayEnd": "24:00",
+    "days": [
+      {
+        "id": "patek",
+        "label": "Pátek",
+        "date": "2026-06-19"
+      },
+      {
+        "id": "sobota",
+        "label": "Sobota",
+        "date": "2026-06-20"
+      },
+      {
+        "id": "nedele",
+        "label": "Neděle",
+        "date": "2026-06-21"
+      }
+    ],
+    "venues": [
+      {
+        "id": "historicke-pruvody",
+        "label": "Historické průvody"
+      },
+      {
+        "id": "namesti-svornosti",
+        "label": "Náměstí Svornosti"
+      },
+      {
+        "id": "pivovarska-zahrada",
+        "label": "Pivovarská zahrada"
+      },
+      {
+        "id": "siroka-ulice",
+        "label": "Široká ulice"
+      },
+      {
+        "id": "hradebni-ulice-divadelni-scena-viti-marsika",
+        "label": "Hradební ulice – Divadelní scéna Víti Maršíka"
+      },
+      {
+        "id": "klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek",
+        "label": "Kláštery – Klášterní dvůr, řemeslnická ulička, nádvoří klarisek"
+      },
+      {
+        "id": "mestsky-park",
+        "label": "Městský park"
+      },
+      {
+        "id": "jizni-zamecke-terasy",
+        "label": "Jižní zámecké terasy"
+      },
+      {
+        "id": "hotel-ruze-jezuitsky-sal",
+        "label": "Hotel Růže – Jezuitský sál"
+      }
+    ],
+    "types": [
+      {
+        "id": "concert",
+        "label": "Koncert",
+        "colorVar": "--type-concert"
+      },
+      {
+        "id": "performance",
+        "label": "Představení",
+        "colorVar": "--type-performance"
+      },
+      {
+        "id": "talk",
+        "label": "Přednáška",
+        "colorVar": "--type-talk"
+      },
+      {
+        "id": "workshop",
+        "label": "Workshop",
+        "colorVar": "--type-workshop"
+      }
+    ],
+    "events": [
+      {
+        "id": "patek-historicke-pruvody-rychtarsky-pruvod-mestem-0",
+        "planIndex": 0,
+        "dayId": "patek",
+        "venueId": "historicke-pruvody",
+        "title": "Rychtářský průvod městem",
+        "type": "performance",
+        "start": "18:00",
+        "end": "22:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-historicke-pruvody-ohnovy-pruvod-mestem-se-zakoncenim-v-piv-1",
+        "planIndex": 1,
+        "dayId": "patek",
+        "venueId": "historicke-pruvody",
+        "title": "Ohňový průvod městem se zakončením v Pivovarské zahradě —.",
+        "type": "performance",
+        "start": "22:00",
+        "end": "24:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-namesti-svornosti-gothien-svetska-stredoveka-hudba-2",
+        "planIndex": 2,
+        "dayId": "patek",
+        "venueId": "namesti-svornosti",
+        "title": "Gothien — Světská středověká hudba",
+        "type": "concert",
+        "start": "17:00",
+        "end": "18:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-namesti-svornosti-petr-theimer-kejklir-a-zongler-3",
+        "planIndex": 3,
+        "dayId": "patek",
+        "venueId": "namesti-svornosti",
+        "title": "Petr Theimer — Kejklíř a žongléř",
+        "type": "performance",
+        "start": "18:00",
+        "end": "18:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-namesti-svornosti-prichod-rychtarskeho-pruvodu-a-zahajeni--4",
+        "planIndex": 4,
+        "dayId": "patek",
+        "venueId": "namesti-svornosti",
+        "title": "Příchod rychtářského průvodu a zahájení slavností",
+        "type": "performance",
+        "start": "18:30",
+        "end": "18:45",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-namesti-svornosti-farha-vystoupeni-orientalniho-tance-5",
+        "planIndex": 5,
+        "dayId": "patek",
+        "venueId": "namesti-svornosti",
+        "title": "Farha — Vystoupení orientálního tance",
+        "type": "performance",
+        "start": "18:45",
+        "end": "19:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-namesti-svornosti-andrea-olomouc-historicky-serm-6",
+        "planIndex": 6,
+        "dayId": "patek",
+        "venueId": "namesti-svornosti",
+        "title": "Andrea Olomouc — Historický šerm",
+        "type": "performance",
+        "start": "19:30",
+        "end": "20:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-namesti-svornosti-gral-brno-sermirske-a-bubenicke-ukazky-7",
+        "planIndex": 7,
+        "dayId": "patek",
+        "venueId": "namesti-svornosti",
+        "title": "Grál Brno — Šermířské a bubenické ukázky",
+        "type": "performance",
+        "start": "20:00",
+        "end": "20:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-namesti-svornosti-lakoma-barka-historizujici-folk-a-lidove-8",
+        "planIndex": 8,
+        "dayId": "patek",
+        "venueId": "namesti-svornosti",
+        "title": "Lakomá Barka — Historizující folk a lidové písně",
+        "type": "concert",
+        "start": "20:30",
+        "end": "21:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-namesti-svornosti-komedianti-na-kare-zonglerske-predstaven-9",
+        "planIndex": 9,
+        "dayId": "patek",
+        "venueId": "namesti-svornosti",
+        "title": "Komedianti na káře — Žongléřské představení",
+        "type": "performance",
+        "start": "21:30",
+        "end": "22:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-namesti-svornosti-pruchod-ohnoveho-pruvodu-10",
+        "planIndex": 10,
+        "dayId": "patek",
+        "venueId": "namesti-svornosti",
+        "title": "Průchod ohňového průvodu",
+        "type": "performance",
+        "start": "22:00",
+        "end": "22:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-namesti-svornosti-braagas-lidove-pisne-stredoveke-evropy-11",
+        "planIndex": 11,
+        "dayId": "patek",
+        "venueId": "namesti-svornosti",
+        "title": "BraAgas — Lidové písně středověké Evropy",
+        "type": "concert",
+        "start": "22:30",
+        "end": "24:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-pivovarska-zahrada-turnaj-ruzi-rytirsky-turnaj-na-konich-12",
+        "planIndex": 12,
+        "dayId": "patek",
+        "venueId": "pivovarska-zahrada",
+        "title": "Turnaj růží — Rytířský turnaj na koních",
+        "type": "performance",
+        "start": "20:00",
+        "end": "22:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-pivovarska-zahrada-prichod-ohnoveho-pruvodu-13",
+        "planIndex": 13,
+        "dayId": "patek",
+        "venueId": "pivovarska-zahrada",
+        "title": "Příchod ohňového průvodu",
+        "type": "performance",
+        "start": "22:30",
+        "end": "23:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-pivovarska-zahrada-historicka-tancirna-14",
+        "planIndex": 14,
+        "dayId": "patek",
+        "venueId": "pivovarska-zahrada",
+        "title": "Historická tančírna",
+        "type": "talk",
+        "start": "23:00",
+        "end": "24:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-siroka-ulice-gral-brno-sermirske-a-bubenicke-ukazky-15",
+        "planIndex": 15,
+        "dayId": "patek",
+        "venueId": "siroka-ulice",
+        "title": "Grál Brno — Šermířské a bubenické ukázky",
+        "type": "performance",
+        "start": "16:30",
+        "end": "17:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-siroka-ulice-krumlovsti-pistci-detsky-a-mladeznicky-f-16",
+        "planIndex": 16,
+        "dayId": "patek",
+        "venueId": "siroka-ulice",
+        "title": "Krumlovští pištci — Dětský a mládežnický flétkový soubor",
+        "type": "concert",
+        "start": "17:00",
+        "end": "17:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-siroka-ulice-fioretto-ceskokrumlovsky-fletnovy-soubor-17",
+        "planIndex": 17,
+        "dayId": "patek",
+        "venueId": "siroka-ulice",
+        "title": "Fioretto — Českokrumlovský flétnový soubor",
+        "type": "concert",
+        "start": "17:30",
+        "end": "18:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-siroka-ulice-in-flamenus-orientalni-vystoupeni-18",
+        "planIndex": 18,
+        "dayId": "patek",
+        "venueId": "siroka-ulice",
+        "title": "In Flamenus — Orientální vystoupení",
+        "type": "performance",
+        "start": "18:00",
+        "end": "18:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-siroka-ulice-kejklir-pupa-kejklir-a-zongler-19",
+        "planIndex": 19,
+        "dayId": "patek",
+        "venueId": "siroka-ulice",
+        "title": "Kejklíř Půpa — Kejklíř a žonglér",
+        "type": "performance",
+        "start": "18:30",
+        "end": "19:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-siroka-ulice-kancioneta-soubor-historickeho-tance-20",
+        "planIndex": 20,
+        "dayId": "patek",
+        "venueId": "siroka-ulice",
+        "title": "Kancioneta — Soubor historického tance",
+        "type": "performance",
+        "start": "19:00",
+        "end": "19:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-siroka-ulice-bratri-z-ruze-ceskokrumlovsti-sermiri-21",
+        "planIndex": 21,
+        "dayId": "patek",
+        "venueId": "siroka-ulice",
+        "title": "Bratři z Růže — Českokrumlovští šermíři",
+        "type": "performance",
+        "start": "19:30",
+        "end": "24:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-hradebni-ulice-divadelni-scena-viti-marsika-divadlo-ja-to-jsem-pinocchiotheater-ja-t-22",
+        "planIndex": 22,
+        "dayId": "patek",
+        "venueId": "hradebni-ulice-divadelni-scena-viti-marsika",
+        "title": "Divadlo Já to jsem: — PinocchioTheater Já to jsem: Pinocchio",
+        "type": "performance",
+        "start": "16:00",
+        "end": "18:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-hradebni-ulice-divadelni-scena-viti-marsika-divadlo-ja-to-jsem-maly-princ-23",
+        "planIndex": 23,
+        "dayId": "patek",
+        "venueId": "hradebni-ulice-divadelni-scena-viti-marsika",
+        "title": "Divadlo Já to jsem: — Malý princ",
+        "type": "performance",
+        "start": "18:00",
+        "end": "24:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek-kejklir-vojta-vrtek-kejklir-zongler-a-vs-24",
+        "planIndex": 24,
+        "dayId": "patek",
+        "venueId": "klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek",
+        "title": "Kejklíř Vojta Vrtek — Kejklíř, žonglér a všeuměl",
+        "type": "performance",
+        "start": "15:00",
+        "end": "16:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek-kancioneta-soubor-historickeho-tance-25",
+        "planIndex": 25,
+        "dayId": "patek",
+        "venueId": "klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek",
+        "title": "Kancioneta — Soubor historického tance",
+        "type": "performance",
+        "start": "16:00",
+        "end": "17:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek-harciri-z-rokycan-ukazky-umeni-sermu-26",
+        "planIndex": 26,
+        "dayId": "patek",
+        "venueId": "klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek",
+        "title": "Harcíři z Rokycan — Ukázky umění šermu",
+        "type": "performance",
+        "start": "17:00",
+        "end": "18:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek-rival-pisek-sermirske-ukazky-27",
+        "planIndex": 27,
+        "dayId": "patek",
+        "venueId": "klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek",
+        "title": "Rival Písek — Šermířské ukázky",
+        "type": "performance",
+        "start": "18:00",
+        "end": "19:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek-flegart-monadria-praporova-performance-28",
+        "planIndex": 28,
+        "dayId": "patek",
+        "venueId": "klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek",
+        "title": "FlegArt Monadria — Praporová performance",
+        "type": "performance",
+        "start": "19:00",
+        "end": "20:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek-kejklir-vojta-vrtek-kejklir-zongler-a-vs-29",
+        "planIndex": 29,
+        "dayId": "patek",
+        "venueId": "klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek",
+        "title": "Kejklíř Vojta Vrtek — Kejklíř, žonglér a všeuměl",
+        "type": "performance",
+        "start": "20:00",
+        "end": "24:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-mestsky-park-ukazky-remesel-raznice-minci-dobrovolne--30",
+        "planIndex": 30,
+        "dayId": "patek",
+        "venueId": "mestsky-park",
+        "title": "Ukázky řemesel, raznice mincí, dobrovolné stolní hry, workshopy",
+        "type": "workshop",
+        "start": "15:00",
+        "end": "17:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-mestsky-park-oblekani-bojovniku-do-zbroji-31",
+        "planIndex": 31,
+        "dayId": "patek",
+        "venueId": "mestsky-park",
+        "title": "Oblékání bojovníků do zbrojí",
+        "type": "workshop",
+        "start": "17:00",
+        "end": "17:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-mestsky-park-sermirsky-vycvik-mladeze-s-ukazkou-zbran-32",
+        "planIndex": 32,
+        "dayId": "patek",
+        "venueId": "mestsky-park",
+        "title": "Šermířský výcvik mládeže s ukázkou zbraní",
+        "type": "workshop",
+        "start": "17:30",
+        "end": "19:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-mestsky-park-dobova-hostina-s-dobrovolnym-programem-33",
+        "planIndex": 33,
+        "dayId": "patek",
+        "venueId": "mestsky-park",
+        "title": "Dobová hostina s dobrovolným programem",
+        "type": "workshop",
+        "start": "19:00",
+        "end": "20:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-mestsky-park-tanecni-veseli-34",
+        "planIndex": 34,
+        "dayId": "patek",
+        "venueId": "mestsky-park",
+        "title": "Taneční veselí",
+        "type": "talk",
+        "start": "20:00",
+        "end": "21:45",
+        "defaultSelected": false
+      },
+      {
+        "id": "patek-mestsky-park-requia-ohnova-show-35",
+        "planIndex": 35,
+        "dayId": "patek",
+        "venueId": "mestsky-park",
+        "title": "Requia — Ohňová show",
+        "type": "performance",
+        "start": "21:45",
+        "end": "24:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-historicke-pruvody-kirchparada-schwarzenberske-granatnicke--36",
+        "planIndex": 36,
+        "dayId": "sobota",
+        "venueId": "historicke-pruvody",
+        "title": "Kirchparáda Schwarzenberské granátnické gardy",
+        "type": "performance",
+        "start": "09:00",
+        "end": "15:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-historicke-pruvody-slavnostni-historicky-pruvod-mestem-hlav-37",
+        "planIndex": 37,
+        "dayId": "sobota",
+        "venueId": "historicke-pruvody",
+        "title": "Slavnostní historický průvod městem — Hlavní průvod",
+        "type": "performance",
+        "start": "15:00",
+        "end": "21:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-historicke-pruvody-alegoricky-pruvod-anticke-druziny-na-vor-38",
+        "planIndex": 38,
+        "dayId": "sobota",
+        "venueId": "historicke-pruvody",
+        "title": "Alegorický průvod antické družiny na vorech na řece Vltavě",
+        "type": "performance",
+        "start": "21:30",
+        "end": "22:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-historicke-pruvody-ohnovy-pruvod-mestem-se-slavnostnim-ohno-39",
+        "planIndex": 39,
+        "dayId": "sobota",
+        "venueId": "historicke-pruvody",
+        "title": "Ohňový průvod městem se slavnostním ohňovým zakončením v Pivovarské zahradě",
+        "type": "performance",
+        "start": "22:00",
+        "end": "24:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-namesti-svornosti-hospoda-u-petrova-voka-komponovany-histo-40",
+        "planIndex": 40,
+        "dayId": "sobota",
+        "venueId": "namesti-svornosti",
+        "title": "Hospoda u Petrova Voka — Komponovaný historický program",
+        "type": "performance",
+        "start": "10:00",
+        "end": "13:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-namesti-svornosti-adorea-olomouc-historicky-serm-41",
+        "planIndex": 41,
+        "dayId": "sobota",
+        "venueId": "namesti-svornosti",
+        "title": "Adorea Olomouc — Historický šerm",
+        "type": "performance",
+        "start": "13:30",
+        "end": "14:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-namesti-svornosti-cink-prachatice-pisne-folklorni-rytirske-42",
+        "planIndex": 42,
+        "dayId": "sobota",
+        "venueId": "namesti-svornosti",
+        "title": "Cink Prachatice — Písně folklórní, rytířské, žákovské a jiné",
+        "type": "concert",
+        "start": "14:00",
+        "end": "15:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-namesti-svornosti-pruchod-hlavniho-historickeho-pruvodu-43",
+        "planIndex": 43,
+        "dayId": "sobota",
+        "venueId": "namesti-svornosti",
+        "title": "Průchod hlavního historického průvodu",
+        "type": "performance",
+        "start": "15:00",
+        "end": "16:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-namesti-svornosti-karmina-stare-ceske-pisne-a-balady-44",
+        "planIndex": 44,
+        "dayId": "sobota",
+        "venueId": "namesti-svornosti",
+        "title": "Karmína — Staré české písně a balady",
+        "type": "concert",
+        "start": "16:00",
+        "end": "17:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-namesti-svornosti-komedianti-na-kare-zonglerske-predstaven-45",
+        "planIndex": 45,
+        "dayId": "sobota",
+        "venueId": "namesti-svornosti",
+        "title": "Komedianti na káře — Žongléřské představení",
+        "type": "performance",
+        "start": "17:00",
+        "end": "17:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-namesti-svornosti-alla-danza-soubor-historickeho-tance-dvo-46",
+        "planIndex": 46,
+        "dayId": "sobota",
+        "venueId": "namesti-svornosti",
+        "title": "Alla Danza — Soubor historického tance: dvorská renesance",
+        "type": "performance",
+        "start": "17:30",
+        "end": "18:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-namesti-svornosti-adorea-olomouc-historicky-serm-47",
+        "planIndex": 47,
+        "dayId": "sobota",
+        "venueId": "namesti-svornosti",
+        "title": "Adorea Olomouc — Historický šerm",
+        "type": "performance",
+        "start": "18:00",
+        "end": "18:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-namesti-svornosti-in-flamenus-orientalni-vystoupeni-48",
+        "planIndex": 48,
+        "dayId": "sobota",
+        "venueId": "namesti-svornosti",
+        "title": "In Flamenus — Orientální vystoupení",
+        "type": "performance",
+        "start": "18:30",
+        "end": "19:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-namesti-svornosti-arcus-svetska-stredoveka-hudba-49",
+        "planIndex": 49,
+        "dayId": "sobota",
+        "venueId": "namesti-svornosti",
+        "title": "Arcus — Světská středověká hudba",
+        "type": "concert",
+        "start": "19:00",
+        "end": "20:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-namesti-svornosti-kejklir-pupa-kejklir-a-zongler-50",
+        "planIndex": 50,
+        "dayId": "sobota",
+        "venueId": "namesti-svornosti",
+        "title": "Kejklíř Půpa — Kejklíř a žonglér",
+        "type": "performance",
+        "start": "20:00",
+        "end": "20:45",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-namesti-svornosti-krless-svetova-stredoveka-hudba-51",
+        "planIndex": 51,
+        "dayId": "sobota",
+        "venueId": "namesti-svornosti",
+        "title": "Krless — Světová středověká hudba",
+        "type": "concert",
+        "start": "20:45",
+        "end": "22:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-namesti-svornosti-pruchod-ohnoveho-pruvodu-52",
+        "planIndex": 52,
+        "dayId": "sobota",
+        "venueId": "namesti-svornosti",
+        "title": "Průchod ohňového průvodu",
+        "type": "performance",
+        "start": "22:00",
+        "end": "22:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-namesti-svornosti-quanti-minoris-slavi-20-let-na-scene-his-53",
+        "planIndex": 53,
+        "dayId": "sobota",
+        "venueId": "namesti-svornosti",
+        "title": "Quanti Minoris slaví 20 let na scéně — Historizující folkrock s keltskými kořeny",
+        "type": "concert",
+        "start": "22:30",
+        "end": "24:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-pivovarska-zahrada-karmina-stare-ceske-pisne-a-balady-54",
+        "planIndex": 54,
+        "dayId": "sobota",
+        "venueId": "pivovarska-zahrada",
+        "title": "Karmína — Staré české písně a balady",
+        "type": "concert",
+        "start": "12:00",
+        "end": "13:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-pivovarska-zahrada-arcus-svetska-stredoveka-hudba-55",
+        "planIndex": 55,
+        "dayId": "sobota",
+        "venueId": "pivovarska-zahrada",
+        "title": "Arcus — Světská středověká hudba",
+        "type": "concert",
+        "start": "13:30",
+        "end": "16:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-pivovarska-zahrada-krless-svetska-stredoveka-hudba-56",
+        "planIndex": 56,
+        "dayId": "sobota",
+        "venueId": "pivovarska-zahrada",
+        "title": "Krless — Světská středověká hudba",
+        "type": "concert",
+        "start": "16:30",
+        "end": "18:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-pivovarska-zahrada-remdih-svetska-stredoveka-hudba-57",
+        "planIndex": 57,
+        "dayId": "sobota",
+        "venueId": "pivovarska-zahrada",
+        "title": "Řemdih — Světská středověká hudba",
+        "type": "concert",
+        "start": "18:00",
+        "end": "19:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-pivovarska-zahrada-lakoma-barka-historizujici-folk-a-lidove-58",
+        "planIndex": 58,
+        "dayId": "sobota",
+        "venueId": "pivovarska-zahrada",
+        "title": "Lakomá Barka — Historizující folk a lidové písně",
+        "type": "concert",
+        "start": "19:30",
+        "end": "20:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-pivovarska-zahrada-pani-z-kolina-vycvik-halapartniku-cisars-59",
+        "planIndex": 59,
+        "dayId": "sobota",
+        "venueId": "pivovarska-zahrada",
+        "title": "Páni z Kolína — Výcvik halapartníků císařské gardy",
+        "type": "workshop",
+        "start": "20:30",
+        "end": "21:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-pivovarska-zahrada-trifikus-evropska-hudba-vrcholneho-stred-60",
+        "planIndex": 60,
+        "dayId": "sobota",
+        "venueId": "pivovarska-zahrada",
+        "title": "Trifikus — Evropská hudba vrcholného středověku",
+        "type": "concert",
+        "start": "21:00",
+        "end": "22:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-pivovarska-zahrada-prichod-ohnoveho-pruvodu-61",
+        "planIndex": 61,
+        "dayId": "sobota",
+        "venueId": "pivovarska-zahrada",
+        "title": "Příchod ohňového průvodu",
+        "type": "performance",
+        "start": "22:30",
+        "end": "23:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-pivovarska-zahrada-flagart-monadria-praporova-performance-s-62",
+        "planIndex": 62,
+        "dayId": "sobota",
+        "venueId": "pivovarska-zahrada",
+        "title": "FlagArt Monadria — Praporová performance s originální videoprojekcí",
+        "type": "performance",
+        "start": "23:00",
+        "end": "23:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-pivovarska-zahrada-in-flamenus-a-palitschi-komponovana-ohno-63",
+        "planIndex": 63,
+        "dayId": "sobota",
+        "venueId": "pivovarska-zahrada",
+        "title": "In Flamenus a Palitschi — Komponovaná ohňová show",
+        "type": "performance",
+        "start": "23:30",
+        "end": "24:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-jizni-zamecke-terasy-alegoricky-pruvod-anticke-druziny-na-vor-64",
+        "planIndex": 64,
+        "dayId": "sobota",
+        "venueId": "jizni-zamecke-terasy",
+        "title": "Alegorický průvod antické družiny na vorech na řece Vltavě",
+        "type": "performance",
+        "start": "21:30",
+        "end": "23:45",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-jizni-zamecke-terasy-slavnostni-ohnostroj-na-jiznich-zameckyc-65",
+        "planIndex": 65,
+        "dayId": "sobota",
+        "venueId": "jizni-zamecke-terasy",
+        "title": "Slavnostní ohňostroj — Na jižních zámeckých terasách a nad zámkem Český Krumlov",
+        "type": "performance",
+        "start": "23:45",
+        "end": "24:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-siroka-ulice-krless-svetska-stredoveka-hudba-66",
+        "planIndex": 66,
+        "dayId": "sobota",
+        "venueId": "siroka-ulice",
+        "title": "Krless — Světská středověká hudba",
+        "type": "concert",
+        "start": "10:30",
+        "end": "11:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-siroka-ulice-arcus-svetska-stredoveka-hudba-67",
+        "planIndex": 67,
+        "dayId": "sobota",
+        "venueId": "siroka-ulice",
+        "title": "Arcus — Světská středověká hudba",
+        "type": "concert",
+        "start": "11:00",
+        "end": "11:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-siroka-ulice-bratri-z-ruze-ceskokrumlovsti-sermiri-68",
+        "planIndex": 68,
+        "dayId": "sobota",
+        "venueId": "siroka-ulice",
+        "title": "Bratři z růže — Českokrumlovští šermíři",
+        "type": "performance",
+        "start": "11:30",
+        "end": "12:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-siroka-ulice-cink-prachatice-pisne-folklorni-rytirske-69",
+        "planIndex": 69,
+        "dayId": "sobota",
+        "venueId": "siroka-ulice",
+        "title": "Cink Prachatice — Písně folklórní, rytířské, žákovské a jiné",
+        "type": "concert",
+        "start": "12:00",
+        "end": "12:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-siroka-ulice-remdih-svetska-stredoveka-hudba-70",
+        "planIndex": 70,
+        "dayId": "sobota",
+        "venueId": "siroka-ulice",
+        "title": "Řemdih — Světská středověká hudba",
+        "type": "concert",
+        "start": "12:30",
+        "end": "13:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-siroka-ulice-gral-brno-sermirske-a-bubenicke-ukazky-71",
+        "planIndex": 71,
+        "dayId": "sobota",
+        "venueId": "siroka-ulice",
+        "title": "Grál Brno — Šermířské a bubenické ukázky",
+        "type": "performance",
+        "start": "13:00",
+        "end": "13:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-siroka-ulice-gothien-svetska-stredoveka-hudba-72",
+        "planIndex": 72,
+        "dayId": "sobota",
+        "venueId": "siroka-ulice",
+        "title": "Gothien — Světská středověká hudba",
+        "type": "concert",
+        "start": "13:30",
+        "end": "14:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-siroka-ulice-amare-romane-cave-ceskokrumlovsky-romsky-73",
+        "planIndex": 73,
+        "dayId": "sobota",
+        "venueId": "siroka-ulice",
+        "title": "Amare Romane Čave — Českokrumlovský romský taneční soubor",
+        "type": "talk",
+        "start": "14:00",
+        "end": "16:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-siroka-ulice-amare-romane-cave-ceskokrumlovsky-romsky-74",
+        "planIndex": 74,
+        "dayId": "sobota",
+        "venueId": "siroka-ulice",
+        "title": "Amare Romane Čave — Českokrumlovský romský taneční soubor",
+        "type": "talk",
+        "start": "16:00",
+        "end": "16:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-siroka-ulice-lakoma-barka-historizujici-folk-a-lidove-75",
+        "planIndex": 75,
+        "dayId": "sobota",
+        "venueId": "siroka-ulice",
+        "title": "Lakomá Barka — Historizující folk a lidové písně",
+        "type": "concert",
+        "start": "16:30",
+        "end": "17:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-siroka-ulice-kejklir-pupa-kejklir-a-zongler-76",
+        "planIndex": 76,
+        "dayId": "sobota",
+        "venueId": "siroka-ulice",
+        "title": "Kejklíř Půpa — Kejklíř a žonglér",
+        "type": "performance",
+        "start": "17:00",
+        "end": "17:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-siroka-ulice-mariane-libcice-tanecni-soubor-od-vltavs-77",
+        "planIndex": 77,
+        "dayId": "sobota",
+        "venueId": "siroka-ulice",
+        "title": "Mariane Libčice — Taneční soubor od vltavských břehů",
+        "type": "talk",
+        "start": "17:30",
+        "end": "18:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-siroka-ulice-bratri-z-ruze-ceskokrumlovsti-sermiri-78",
+        "planIndex": 78,
+        "dayId": "sobota",
+        "venueId": "siroka-ulice",
+        "title": "Bratři z růže — Českokrumlovští šermíři",
+        "type": "performance",
+        "start": "18:00",
+        "end": "18:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-siroka-ulice-karmina-stare-ceske-pisne-a-balady-79",
+        "planIndex": 79,
+        "dayId": "sobota",
+        "venueId": "siroka-ulice",
+        "title": "Karmína — Staré české písně a balady",
+        "type": "concert",
+        "start": "18:30",
+        "end": "19:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-siroka-ulice-el-raks-sael-vystoupeni-orientalnich-tan-80",
+        "planIndex": 80,
+        "dayId": "sobota",
+        "venueId": "siroka-ulice",
+        "title": "El Raks Sael — Vystoupení orientálních tanečnic",
+        "type": "performance",
+        "start": "19:00",
+        "end": "19:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-siroka-ulice-kancioneta-soubor-historickeho-tance-81",
+        "planIndex": 81,
+        "dayId": "sobota",
+        "venueId": "siroka-ulice",
+        "title": "Kancioneta — Soubor historického tance",
+        "type": "performance",
+        "start": "19:30",
+        "end": "24:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-hradebni-ulice-divadelni-scena-viti-marsika-the-dark-blue-elephants-ceskokrumlovska--82",
+        "planIndex": 82,
+        "dayId": "sobota",
+        "venueId": "hradebni-ulice-divadelni-scena-viti-marsika",
+        "title": "The Dark Blue Elephants — Českokrumlovská folk-rocková kapela",
+        "type": "concert",
+        "start": "11:00",
+        "end": "11:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-hradebni-ulice-divadelni-scena-viti-marsika-divadlo-ja-to-jsem-cervena-karkulka-83",
+        "planIndex": 83,
+        "dayId": "sobota",
+        "venueId": "hradebni-ulice-divadelni-scena-viti-marsika",
+        "title": "Divadlo Já to jsem: — Červená karkulka",
+        "type": "performance",
+        "start": "11:30",
+        "end": "12:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-hradebni-ulice-divadelni-scena-viti-marsika-the-dark-blue-elephants-ceskokrumlovska--84",
+        "planIndex": 84,
+        "dayId": "sobota",
+        "venueId": "hradebni-ulice-divadelni-scena-viti-marsika",
+        "title": "The Dark Blue Elephants — Českokrumlovská folk-rocková kapela",
+        "type": "concert",
+        "start": "12:30",
+        "end": "15:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-hradebni-ulice-divadelni-scena-viti-marsika-the-dark-blue-elephants-ceskokrumlovska--85",
+        "planIndex": 85,
+        "dayId": "sobota",
+        "venueId": "hradebni-ulice-divadelni-scena-viti-marsika",
+        "title": "The Dark Blue Elephants — Českokrumlovská folk-rocková kapela",
+        "type": "concert",
+        "start": "15:00",
+        "end": "16:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-hradebni-ulice-divadelni-scena-viti-marsika-divadlo-viti-marcika-snehurka-a-sedm-trp-86",
+        "planIndex": 86,
+        "dayId": "sobota",
+        "venueId": "hradebni-ulice-divadelni-scena-viti-marsika",
+        "title": "Divadlo Víti Marčíka: — Sněhurka a sedm trpaslíků",
+        "type": "performance",
+        "start": "16:00",
+        "end": "17:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-hradebni-ulice-divadelni-scena-viti-marsika-the-dark-blue-elephants-ceskokrumlovska--87",
+        "planIndex": 87,
+        "dayId": "sobota",
+        "venueId": "hradebni-ulice-divadelni-scena-viti-marsika",
+        "title": "The Dark Blue Elephants — Českokrumlovská folk-rocková kapela",
+        "type": "concert",
+        "start": "17:30",
+        "end": "24:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek-kejklir-vojta-vrtek-kejklir-zongler-a-vs-88",
+        "planIndex": 88,
+        "dayId": "sobota",
+        "venueId": "klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek",
+        "title": "Kejklíř Vojta Vrtek — Kejklíř, žonglér a všeuměl",
+        "type": "performance",
+        "start": "10:30",
+        "end": "11:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek-fioretto-a-burghausen-spolecne-tanecni-v-89",
+        "planIndex": 89,
+        "dayId": "sobota",
+        "venueId": "klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek",
+        "title": "Fioretto a Burghausen — Společné taneční vystoupení spřátelených souborů",
+        "type": "performance",
+        "start": "11:00",
+        "end": "11:45",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek-rival-pisek-sermirske-ukazky-90",
+        "planIndex": 90,
+        "dayId": "sobota",
+        "venueId": "klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek",
+        "title": "Rival Písek — Šermířské ukázky",
+        "type": "performance",
+        "start": "11:45",
+        "end": "12:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek-alla-danza-historicky-tanec-91",
+        "planIndex": 91,
+        "dayId": "sobota",
+        "venueId": "klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek",
+        "title": "Alla Danza — Historický tanec",
+        "type": "performance",
+        "start": "12:30",
+        "end": "13:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek-el-raks-sael-vystoupeni-orientalnich-tan-92",
+        "planIndex": 92,
+        "dayId": "sobota",
+        "venueId": "klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek",
+        "title": "El Raks Sael — Vystoupení orientálních tanečnic",
+        "type": "performance",
+        "start": "13:30",
+        "end": "17:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek-kejklir-vojta-vrtek-kejklir-zongler-a-vs-93",
+        "planIndex": 93,
+        "dayId": "sobota",
+        "venueId": "klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek",
+        "title": "Kejklíř Vojta Vrtek — Kejklíř, žonglér a všeuměl",
+        "type": "performance",
+        "start": "17:00",
+        "end": "17:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek-rival-pisek-sermirske-ukazky-94",
+        "planIndex": 94,
+        "dayId": "sobota",
+        "venueId": "klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek",
+        "title": "Rival Písek — Šermířské ukázky",
+        "type": "performance",
+        "start": "17:30",
+        "end": "18:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek-salome-soubor-historickeho-tance-95",
+        "planIndex": 95,
+        "dayId": "sobota",
+        "venueId": "klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek",
+        "title": "Salome — Soubor historického tance",
+        "type": "performance",
+        "start": "18:00",
+        "end": "18:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek-flagart-monadria-praporova-performance-96",
+        "planIndex": 96,
+        "dayId": "sobota",
+        "venueId": "klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek",
+        "title": "FlagArt Monadria — Praporová performance",
+        "type": "performance",
+        "start": "18:30",
+        "end": "19:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek-kejklir-vojta-vrtek-kejklir-zongler-a-vs-97",
+        "planIndex": 97,
+        "dayId": "sobota",
+        "venueId": "klastery-klasterni-dvur-remeslnicka-ulicka-nadvori-klarisek",
+        "title": "Kejklíř Vojta Vrtek — Kejklíř, žonglér a všeuměl",
+        "type": "performance",
+        "start": "19:30",
+        "end": "24:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-mestsky-park-ukazky-remesel-raznice-minci-dobrovolne--98",
+        "planIndex": 98,
+        "dayId": "sobota",
+        "venueId": "mestsky-park",
+        "title": "Ukázky řemesel, raznice mincí, dobrovolné stolní hry, workshopy",
+        "type": "workshop",
+        "start": "10:00",
+        "end": "11:15",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-mestsky-park-reliquia-cesta-rytire-sermirske-vystoupe-99",
+        "planIndex": 99,
+        "dayId": "sobota",
+        "venueId": "mestsky-park",
+        "title": "Reliquia: Cesta rytíře — Šermířské vystoupení s dětmi a pro děti",
+        "type": "performance",
+        "start": "11:15",
+        "end": "12:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-mestsky-park-dobova-hostina-s-doprovodnym-programem-100",
+        "planIndex": 100,
+        "dayId": "sobota",
+        "venueId": "mestsky-park",
+        "title": "Dobová hostina s doprovodným programem",
+        "type": "workshop",
+        "start": "12:00",
+        "end": "18:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-mestsky-park-reliquia-tance-ve-stylu-tribal-fusion-101",
+        "planIndex": 101,
+        "dayId": "sobota",
+        "venueId": "mestsky-park",
+        "title": "Reliquia — Tance ve stylu Tribal Fusion",
+        "type": "performance",
+        "start": "18:00",
+        "end": "18:15",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-mestsky-park-oblekani-bojovniku-na-strety-102",
+        "planIndex": 102,
+        "dayId": "sobota",
+        "venueId": "mestsky-park",
+        "title": "Oblékání bojovníků na střety",
+        "type": "workshop",
+        "start": "18:15",
+        "end": "18:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-mestsky-park-sermirsky-vycvik-mladeze-s-ukazkou-zbran-103",
+        "planIndex": 103,
+        "dayId": "sobota",
+        "venueId": "mestsky-park",
+        "title": "Šermířský výcvik mládeže s ukázkou zbraní",
+        "type": "workshop",
+        "start": "18:30",
+        "end": "19:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-mestsky-park-reliquia-tance-ve-stylu-fatchancebellyda-104",
+        "planIndex": 104,
+        "dayId": "sobota",
+        "venueId": "mestsky-park",
+        "title": "Reliquia — Tance ve stylu FatChanceBellyDance",
+        "type": "performance",
+        "start": "19:30",
+        "end": "20:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-mestsky-park-historikoteka-105",
+        "planIndex": 105,
+        "dayId": "sobota",
+        "venueId": "mestsky-park",
+        "title": "Historikotéka",
+        "type": "performance",
+        "start": "20:00",
+        "end": "24:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-hotel-ruze-jezuitsky-sal-campanello-a-krumlovsti-pistci-spolecne--106",
+        "planIndex": 106,
+        "dayId": "sobota",
+        "venueId": "hotel-ruze-jezuitsky-sal",
+        "title": "Campanello a Krumlovští pištci — Společné vystoupení souboru historického tance a flétnového souboru",
+        "type": "concert",
+        "start": "11:00",
+        "end": "13:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-hotel-ruze-jezuitsky-sal-chaire-pribram-pisen-je-touha-vokalne-in-107",
+        "planIndex": 107,
+        "dayId": "sobota",
+        "venueId": "hotel-ruze-jezuitsky-sal",
+        "title": "Chairé Příbram: Píseň je touha — Vokálně-instrumentální soubor dobových nástrojů",
+        "type": "concert",
+        "start": "13:00",
+        "end": "18:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-hotel-ruze-jezuitsky-sal-fioretto-a-chaire-alchymista-u-dvora-vil-108",
+        "planIndex": 108,
+        "dayId": "sobota",
+        "venueId": "hotel-ruze-jezuitsky-sal",
+        "title": "Fioretto a Chairé: Alchymista u dvora Viléma z Rožmberka — Českokrumlovský taneční soubor a vokálně-instrumentální soubor dobových nástrojů",
+        "type": "concert",
+        "start": "18:00",
+        "end": "20:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "sobota-hotel-ruze-jezuitsky-sal-regii-caroli-regis-trochu-jine-bratrstvo-109",
+        "planIndex": 109,
+        "dayId": "sobota",
+        "venueId": "hotel-ruze-jezuitsky-sal",
+        "title": "Regii Caroli Regis: Trochu jiné bratrstvo — Taneční slavnost s ukázkami renesančních tanců",
+        "type": "talk",
+        "start": "20:30",
+        "end": "24:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "nedele-historicke-pruvody-rychtarsky-pruvod-mestem-a-zakonceni-sla-110",
+        "planIndex": 110,
+        "dayId": "nedele",
+        "venueId": "historicke-pruvody",
+        "title": "Rychtářský průvod městem — A zakončení slavností na náměstí Svornosti",
+        "type": "performance",
+        "start": "15:30",
+        "end": "24:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "nedele-namesti-svornosti-kapka-ceskokrumlovska-folkova-kapela-111",
+        "planIndex": 111,
+        "dayId": "nedele",
+        "venueId": "namesti-svornosti",
+        "title": "Kapka — Českokrumlovská folková kapela",
+        "type": "concert",
+        "start": "11:00",
+        "end": "12:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "nedele-namesti-svornosti-gral-brno-sermirske-a-bubenicke-ukazky-112",
+        "planIndex": 112,
+        "dayId": "nedele",
+        "venueId": "namesti-svornosti",
+        "title": "Grál Brno — Šermířské a bubenické ukázky",
+        "type": "performance",
+        "start": "12:00",
+        "end": "12:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "nedele-namesti-svornosti-karmina-stare-ceske-pisne-a-balady-113",
+        "planIndex": 113,
+        "dayId": "nedele",
+        "venueId": "namesti-svornosti",
+        "title": "Karmína — Staré české písně a balady",
+        "type": "concert",
+        "start": "12:30",
+        "end": "13:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "nedele-namesti-svornosti-petr-theimer-kejklir-a-zongler-114",
+        "planIndex": 114,
+        "dayId": "nedele",
+        "venueId": "namesti-svornosti",
+        "title": "Petr Theimer — Kejklíř a žonglér",
+        "type": "performance",
+        "start": "13:30",
+        "end": "14:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "nedele-namesti-svornosti-remdih-stredoveka-hudba-115",
+        "planIndex": 115,
+        "dayId": "nedele",
+        "venueId": "namesti-svornosti",
+        "title": "Řemdih — Středověká hudba",
+        "type": "concert",
+        "start": "14:00",
+        "end": "15:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "nedele-namesti-svornosti-kejklir-pupa-kejklir-a-zongler-116",
+        "planIndex": 116,
+        "dayId": "nedele",
+        "venueId": "namesti-svornosti",
+        "title": "Kejklíř Půpa — Kejklíř a žonglér",
+        "type": "performance",
+        "start": "15:00",
+        "end": "15:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "nedele-namesti-svornosti-regii-caroli-regis-soubor-historickeho-t-117",
+        "planIndex": 117,
+        "dayId": "nedele",
+        "venueId": "namesti-svornosti",
+        "title": "Regii Caroli regis — Soubor historického tance",
+        "type": "performance",
+        "start": "15:30",
+        "end": "16:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "nedele-namesti-svornosti-prichod-rychtarskeho-pruvodu-a-slavnostn-118",
+        "planIndex": 118,
+        "dayId": "nedele",
+        "venueId": "namesti-svornosti",
+        "title": "Příchod rychtářského průvodu a slavnostní zakončení slavností",
+        "type": "performance",
+        "start": "16:00",
+        "end": "24:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "nedele-mestsky-park-ukazky-remesel-raznice-minci-dobrovolne--119",
+        "planIndex": 119,
+        "dayId": "nedele",
+        "venueId": "mestsky-park",
+        "title": "Ukázky řemesel, raznice mincí, dobrovolné stolní hry, workshopy",
+        "type": "workshop",
+        "start": "10:00",
+        "end": "11:00",
+        "defaultSelected": false
+      },
+      {
+        "id": "nedele-mestsky-park-reliquia-tance-ve-stylu-fatchancebellyda-120",
+        "planIndex": 120,
+        "dayId": "nedele",
+        "venueId": "mestsky-park",
+        "title": "Reliquia — Tance ve stylu FatChanceBellyDance",
+        "type": "performance",
+        "start": "11:00",
+        "end": "11:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "nedele-mestsky-park-tance-na-stredovekou-hudbu-121",
+        "planIndex": 121,
+        "dayId": "nedele",
+        "venueId": "mestsky-park",
+        "title": "Tance na středověkou hudbu",
+        "type": "performance",
+        "start": "11:30",
+        "end": "12:30",
+        "defaultSelected": false
+      },
+      {
+        "id": "nedele-mestsky-park-sermirsky-vycvik-mladeze-s-ukazkou-zbran-122",
+        "planIndex": 122,
+        "dayId": "nedele",
+        "venueId": "mestsky-park",
+        "title": "Šermířský výcvik mládeže s ukázkou zbraní",
+        "type": "workshop",
+        "start": "12:30",
+        "end": "24:00",
+        "defaultSelected": false
+      }
+    ]
+  }
+}

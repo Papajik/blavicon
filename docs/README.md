@@ -23,7 +23,13 @@ Dataset má čtyři hlavní části:
 Manifest `data/events.json` určuje:
 
 - `defaultEventSlug`
-- `events[]` se `slug`, `label` a cestou k datasetu
+- `events[]` se `slug`, `label`, cestou k datasetu a termínem `startsOn` / `endsOn`
+
+Bez `?event=...` se jako výchozí otevře:
+
+1. právě probíhající akce,
+2. jinak nejbližší budoucí akce,
+3. jinak `defaultEventSlug`
 
 ## Důležitá pravidla
 
@@ -51,6 +57,8 @@ data/
   slavnosti/
     event.json
 ```
+
+Výběr akce je v patičce přes modal s kartami akcí. Karty se berou z `data/events.json`, takže tam patří i stručný `summary`, pokud ho chceš zobrazit.
 
 Toolbar odkazy se definují v datasetu takto:
 

@@ -4,7 +4,18 @@
     {
       "slug": "blavicon",
       "label": "Blavicon",
-      "dataset": "./data/blavicon/event.json"
+      "dataset": "./data/blavicon/event.json",
+      "startsOn": "2026-04-09",
+      "endsOn": "2026-04-12",
+      "summary": "Festivalový planner"
+    },
+    {
+      "slug": "slavnosti",
+      "label": "Krumlovské slavnosti",
+      "dataset": "./data/slavnosti/event.json",
+      "startsOn": "2026-06-19",
+      "endsOn": "2026-06-21",
+      "summary": "Mestske slavnosti v Ceskem Krumlove"
     }
   ]
 }

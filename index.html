@@ -25,18 +25,7 @@
 
         <div class="toolbar-card">
           <div class="toolbar-row">
-            <div id="event-switcher-group" class="toolbar-group" hidden>
-              <span id="event-label" class="toolbar-label">Akce</span>
-              <select id="event-switcher" class="toolbar-select field-input" aria-label="Výběr akce"></select>
-            </div>
-
-            <div class="toolbar-group">
-              <span id="day-label" class="toolbar-label">Den</span>
-              <div id="day-tabs" class="day-tabs" role="tablist" aria-label="Výběr dne"></div>
-            </div>
-
             <div class="toolbar-group toolbar-group-actions">
-              <span id="plan-label" class="toolbar-label">Plán</span>
               <button
                 id="plan-actions-button"
                 class="toolbar-link-button"
@@ -84,10 +73,30 @@
               <p id="schedule-kicker" class="section-kicker">Program</p>
               <h2 id="schedule-heading">Načítám</h2>
             </div>
+            <div id="type-filters" class="type-filters"></div>
+          </div>
+          <div class="schedule-toolbar">
+            <div class="toolbar-group">
+              <span id="day-label" class="toolbar-label">Den</span>
+              <div id="day-tabs" class="day-tabs" role="tablist" aria-label="Výběr dne"></div>
+            </div>
           </div>
           <div id="schedule-content" class="schedule-content"></div>
         </section>
       </main>
+
+      <footer class="page-footer">
+        <button
+          id="event-browser-button"
+          class="footer-switch-button"
+          type="button"
+          aria-haspopup="dialog"
+          aria-controls="event-browser-panel"
+          aria-expanded="false"
+        >
+          Dalsi akce
+        </button>
+      </footer>
     </div>
 
     <div id="plan-actions-backdrop" class="plan-actions-backdrop" hidden></div>
@@ -162,6 +171,35 @@
       aria-labelledby="event-detail-title"
     >
       <div id="event-detail-content"></div>
+    </aside>
+
+    <div id="event-browser-backdrop" class="plan-actions-backdrop" hidden></div>
+    <aside
+      id="event-browser-panel"
+      class="event-browser-panel"
+      hidden
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="event-browser-title"
+    >
+      <div class="event-browser-card">
+        <button
+          id="event-browser-close-button"
+          class="plan-actions-close"
+          type="button"
+          data-close-event-browser
+          aria-label="Zavrit vyber akce"
+        >
+          ×
+        </button>
+        <p id="event-browser-kicker" class="section-kicker">Akce</p>
+        <h2 id="event-browser-title" class="plan-actions-title">Vyber akci</h2>
+        <p id="event-browser-copy" class="plan-actions-copy"></p>
+        <div id="event-browser-content" class="event-browser-grid"></div>
+        <div class="plan-actions-row">
+          <button id="event-browser-close-text-button" class="ghost-button" type="button" data-close-event-browser>Zavrit</button>
+        </div>
+      </div>
     </aside>
 
     <script type="module" src="./app.js"></script>

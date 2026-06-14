@@ -27,7 +27,6 @@
     "labels": {
       "event": "Akce",
       "day": "Den",
-      "plan": "Plán",
       "shareAndSettings": "Sdílení a nastavení",
       "shareCode": "Kód plánu",
       "shareLink": "Sdílecí odkaz",
@@ -42,7 +41,11 @@
       "scheduleTimeNote": "09:00 nahoře, 24:00 dole",
       "scheduleVenueCount": "{count} v programu",
       "planActionsCopy": "Správa sdílení, importu a rychlých akcí nad vybraným plánem.",
-      "eventDetail": "Detail události"
+      "eventDetail": "Detail události",
+      "eventBrowserButton": "Prohlížet další události",
+      "eventBrowserTitle": "Vyber akci",
+      "eventBrowserCopy": "Přepni se na jinou akci z katalogu.",
+      "openCurrentEvent": "Otevřít"
     },
     "sections": {
       "overviewKicker": "Rychlý přehled",
@@ -65,7 +68,7 @@
       "conflict": "Kolize"
     },
     "emptyStates": {
-      "currentNoneToday": "Nic vybraného neběží",
+      "currentNoneToday": "Aktuálně žádná vybraná akce neprobíhá",
       "currentNoneOtherDay": "Teď neběží {dayLabelLower}",
       "currentNoneTodayCopy": "Další vybranou akci najdeš hned vedle nebo níž v itineráři.",
       "currentNoneOtherDayCopy": "Aktivní den si můžeš projít dopředu a otevřít si detail z dalších karet.",
@@ -100,14 +103,18 @@
       "cookieUnavailable": "Cookies jsou zřejmě vypnuté. Výběr zůstává jen do zavření stránky.",
       "invalidCodeFormat": "Kód plánu není ve správném formátu.",
       "invalidCodeDecode": "Kód plánu nejde dekódovat.",
-      "versionMismatch": "Kód používá verzi {version}, ale tahle aplikace umí jen verzi {supportedVersion}."
+      "versionMismatch": "Kód používá verzi {version}, ale tahle aplikace umí jen verzi {supportedVersion}.",
+      "currentEventBadge": "Probíhá",
+      "upcomingEventBadge": "Nejbližší"
     },
     "aria": {
       "openEventDetail": "Detail události {title}",
       "addToPlan": "Přidat {title} do plánu",
       "removeFromPlan": "Odebrat {title} z plánu",
       "closePlanMenu": "Zavřít nabídku plánu",
-      "closeEventDetail": "Zavřít detail události"
+      "closeEventDetail": "Zavřít detail události",
+      "closeEventBrowser": "Zavřít přehled akcí",
+      "openEventCatalog": "Otevřít přehled akcí"
     }
   },
   "schedule": {
@@ -117,17 +124,17 @@
       {
         "id": "thu",
         "label": "Čtvrtek",
-        "date": "2026-06-18"
+        "date": "2026-04-09"
       },
       {
         "id": "fri",
         "label": "Pátek",
-        "date": "2026-06-19"
+        "date": "2026-04-10"
       },
       {
         "id": "sat",
         "label": "Sobota",
-        "date": "2026-06-20"
+        "date": "2026-04-11"
       }
     ],
     "venues": [

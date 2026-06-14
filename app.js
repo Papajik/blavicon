@@ -2,6 +2,7 @@ const EVENTS_MANIFEST_URL = "./data/events.json";
 const EVENT_QUERY_PARAM = "event";
 const MAX_COOKIE_AGE_SECONDS = 31536000;
 const TIMELINE_MINUTE_HEIGHT = 2;
+const TIMELINE_EDGE_PADDING = 14;
 const ISO_WEEKDAY_BY_SHORT_NAME = {
   Mon: 1,
   Tue: 2,
@@ -14,7 +15,6 @@ const ISO_WEEKDAY_BY_SHORT_NAME = {
 
 const DEFAULT_UI = {
   labels: {
-    event: "Event",
     day: "Day",
     plan: "Plan",
     shareAndSettings: "Share and settings",
@@ -32,7 +32,12 @@ const DEFAULT_UI = {
     scheduleVenueCount: "{count}",
     planActionsCopy: "",
     eventDetail: "Event detail",
-    openMap: "Open map"
+    openMap: "Open map",
+    eventBrowserButton: "Browse events",
+    eventBrowserTitle: "Choose event",
+    eventBrowserCopy: "",
+    openCurrentEvent: "Open",
+    clearTypeFilter: "Reset filter"
   },
   sections: {
     overviewKicker: "Overview",
@@ -90,14 +95,18 @@ const DEFAULT_UI = {
     cookieUnavailable: "Cookies appear disabled. The selection will only last until the page is closed.",
     invalidCodeFormat: "The plan code format is invalid.",
     invalidCodeDecode: "The plan code could not be decoded.",
-    versionMismatch: "The plan code uses version {version}, but this app only supports version {supportedVersion}."
+    versionMismatch: "The plan code uses version {version}, but this app only supports version {supportedVersion}.",
+    currentEventBadge: "Current event",
+    upcomingEventBadge: "Upcoming"
   },
   aria: {
     openEventDetail: "Open event detail: {title}",
     addToPlan: "Add {title} to the plan",
     removeFromPlan: "Remove {title} from the plan",
     closePlanMenu: "Close plan menu",
-    closeEventDetail: "Close event detail"
+    closeEventDetail: "Close event detail",
+    closeEventBrowser: "Close event browser",
+    openEventCatalog: "Open event browser"
   }
 };
 
@@ -107,16 +116,13 @@ const refs = {
   brandEyebrow: document.querySelector("#brand-eyebrow"),
   brandTitle: document.querySelector("#brand-title"),
   brandCopy: document.querySelector("#brand-copy"),
-  eventSwitcherGroup: document.querySelector("#event-switcher-group"),
-  eventLabel: document.querySelector("#event-label"),
-  eventSwitcher: document.querySelector("#event-switcher"),
   dayLabel: document.querySelector("#day-label"),
-  planLabel: document.querySelector("#plan-label"),
   dayTabs: document.querySelector("#day-tabs"),
   notice: document.querySelector("#notice"),
   overviewKicker: document.querySelector("#overview-kicker"),
   overviewHeading: document.querySelector("#overview-heading"),
   overviewMeta: document.querySelector("#overview-meta"),
+  typeFilters: document.querySelector("#type-filters"),
   overviewCards: document.querySelector("#overview-cards"),
   itineraryKicker: document.querySelector("#itinerary-kicker"),
   itineraryHeading: document.querySelector("#itinerary-heading"),
@@ -142,6 +148,15 @@ const refs = {
   planActionsCloseButton: document.querySelector("#plan-actions-close-button"),
   planActionsCloseTextButton: document.querySelector("#plan-actions-close-text-button"),
   toolbarActionLinks: document.querySelector("#toolbar-action-links"),
+  eventBrowserButton: document.querySelector("#event-browser-button"),
+  eventBrowserBackdrop: document.querySelector("#event-browser-backdrop"),
+  eventBrowserPanel: document.querySelector("#event-browser-panel"),
+  eventBrowserKicker: document.querySelector("#event-browser-kicker"),
+  eventBrowserTitle: document.querySelector("#event-browser-title"),
+  eventBrowserCopy: document.querySelector("#event-browser-copy"),
+  eventBrowserContent: document.querySelector("#event-browser-content"),
+  eventBrowserCloseButton: document.querySelector("#event-browser-close-button"),
+  eventBrowserCloseTextButton: document.querySelector("#event-browser-close-text-button"),
   itineraryContent: document.querySelector("#itinerary-content"),
   scheduleContent: document.querySelector("#schedule-content"),
   eventDetailBackdrop: document.querySelector("#event-detail-backdrop"),
@@ -158,8 +173,10 @@ const state = {
   notice: { kind: "", text: "" },
   planSource: "",
   selectedEventIds: new Set(),
+  activeTypeFilterIds: new Set(),
   planActionsOpen: false,
-  activeEventId: null
+  activeEventId: null,
+  eventBrowserOpen: false
 };
 
 let noticeTimer = null;
@@ -231,9 +248,19 @@ async function loadEventsCatalog() {
     : manifest.events[0].slug;
 
   for (const eventEntry of manifest.events) {
-    if (!eventEntry || typeof eventEntry.slug !== "string" || typeof eventEntry.label !== "string" || typeof eventEntry.dataset !== "string") {
-      throw new Error("Every manifest event must define slug, label and dataset.");
+    if (
+      !eventEntry
+      || typeof eventEntry.slug !== "string"
+      || typeof eventEntry.label !== "string"
+      || typeof eventEntry.dataset !== "string"
+      || typeof eventEntry.startsOn !== "string"
+      || typeof eventEntry.endsOn !== "string"
+    ) {
+      throw new Error("Every manifest event must define slug, label, dataset, startsOn and endsOn.");
     }
+
+    validateDate(eventEntry.startsOn, `events.${eventEntry.slug}.startsOn`);
+    validateDate(eventEntry.endsOn, `events.${eventEntry.slug}.endsOn`);
   }
 
   if (!manifest.events.some((eventEntry) => eventEntry.slug === defaultEventSlug)) {
@@ -248,8 +275,24 @@ async function loadEventsCatalog() {
 
 function resolveCurrentEventEntry(catalog) {
   const params = new URLSearchParams(window.location.search);
-  const requestedSlug = params.get(EVENT_QUERY_PARAM) || catalog.defaultEventSlug;
-  return catalog.events.find((eventEntry) => eventEntry.slug === requestedSlug)
+  const requestedSlug = params.get(EVENT_QUERY_PARAM);
+  if (requestedSlug) {
+    return catalog.events.find((eventEntry) => eventEntry.slug === requestedSlug)
+      ?? catalog.events.find((eventEntry) => eventEntry.slug === catalog.defaultEventSlug)
+      ?? catalog.events[0];
+  }
+
+  const todayKey = getPragueTodayDateKey();
+  const currentEvent = catalog.events.find((eventEntry) => eventEntry.startsOn <= todayKey && todayKey <= eventEntry.endsOn);
+  if (currentEvent) {
+    return currentEvent;
+  }
+
+  const upcomingEvent = [...catalog.events]
+    .filter((eventEntry) => eventEntry.startsOn > todayKey)
+    .sort((left, right) => left.startsOn.localeCompare(right.startsOn))[0];
+
+  return upcomingEvent
     ?? catalog.events.find((eventEntry) => eventEntry.slug === catalog.defaultEventSlug)
     ?? catalog.events[0];
 }
@@ -473,9 +516,7 @@ function applyStaticContent() {
   refs.brandTitle.textContent = branding.headline ?? app.title;
   refs.brandCopy.textContent = branding.copy ?? app.description;
 
-  refs.eventLabel.textContent = ui.labels.event;
   refs.dayLabel.textContent = ui.labels.day;
-  refs.planLabel.textContent = ui.labels.plan;
   refs.overviewKicker.textContent = ui.sections.overviewKicker;
   refs.overviewHeading.textContent = ui.sections.overviewHeading;
   refs.itineraryKicker.textContent = ui.sections.itineraryKicker;
@@ -495,32 +536,20 @@ function applyStaticContent() {
   refs.importLabel.textContent = ui.labels.importPlan;
   refs.importInput.placeholder = ui.labels.importPlaceholder;
   refs.importButton.textContent = ui.labels.load;
+  refs.eventBrowserButton.textContent = ui.labels.eventBrowserButton;
+  refs.eventBrowserButton.setAttribute("aria-label", getAria("openEventCatalog"));
+  refs.eventBrowserKicker.textContent = ui.sections.planKicker;
+  refs.eventBrowserTitle.textContent = ui.labels.eventBrowserTitle;
+  refs.eventBrowserCopy.textContent = ui.labels.eventBrowserCopy;
 
   refs.planActionsCloseButton.setAttribute("aria-label", getAria("closePlanMenu"));
   refs.planActionsCloseTextButton.textContent = ui.labels.close;
   refs.planActionsCloseTextButton.setAttribute("aria-label", getAria("closePlanMenu"));
+  refs.eventBrowserCloseButton.setAttribute("aria-label", getAria("closeEventBrowser"));
+  refs.eventBrowserCloseTextButton.textContent = ui.labels.close;
   refs.dayTabs.setAttribute("aria-label", ui.labels.day);
-  renderEventSwitcher();
   renderToolbarActionLinks(assets.actions);
-}
-
-function renderEventSwitcher() {
-  const hasMultipleEvents = state.catalog.events.length > 1;
-  refs.eventSwitcherGroup.hidden = !hasMultipleEvents;
-
-  if (!hasMultipleEvents) {
-    refs.eventSwitcher.innerHTML = "";
-    return;
-  }
-
-  refs.eventSwitcher.innerHTML = state.catalog.events
-    .map((eventEntry) => `
-      <option value="${escapeHtml(eventEntry.slug)}" ${eventEntry.slug === state.currentEventSlug ? "selected" : ""}>
-        ${escapeHtml(eventEntry.label)}
-      </option>
-    `)
-    .join("");
-  refs.eventSwitcher.setAttribute("aria-label", state.config.ui.labels.event);
+  renderEventBrowser();
 }
 
 function renderToolbarActionLinks(actions = []) {
@@ -545,14 +574,17 @@ function renderToolbarActionLinks(actions = []) {
 }
 
 function bindStaticEvents() {
-  refs.eventSwitcher.addEventListener("change", handleEventSwitcherChange);
   refs.dayTabs.addEventListener("click", handleDayTabClick);
+  refs.typeFilters.addEventListener("click", handleTypeFilterClick);
   refs.overviewCards.addEventListener("click", handleEventCardClick);
   refs.itineraryContent.addEventListener("click", handleEventCardClick);
   refs.scheduleContent.addEventListener("click", handleEventCardClick);
   refs.planActionsButton.addEventListener("click", handlePlanActionsToggle);
   refs.planActionsBackdrop.addEventListener("click", closePlanActions);
   refs.planActionsPanel.addEventListener("click", handlePlanActionsPanelClick);
+  refs.eventBrowserButton.addEventListener("click", handleEventBrowserToggle);
+  refs.eventBrowserBackdrop.addEventListener("click", closeEventBrowser);
+  refs.eventBrowserPanel.addEventListener("click", handleEventBrowserPanelClick);
   refs.restoreDefaultsButton.addEventListener("click", handleRestoreDefaults);
   refs.clearSelectionButton.addEventListener("click", handleClearSelection);
   refs.eventDetailBackdrop.addEventListener("click", closeEventDetail);
@@ -574,6 +606,7 @@ function render() {
   renderDayTabs();
   renderOverview();
   renderPlanActions();
+  renderEventBrowser();
   renderItinerary();
   renderSchedule();
   renderEventDetail();
@@ -610,12 +643,15 @@ function renderDayTabs() {
 }
 
 function renderOverview() {
-  const selectedEvents = getSelectedEvents(state.activeDayId);
-  const dayTimeline = getDayTimelineState(state.activeDayId, state.now);
+  const currentDayId = getCurrentFestivalDayId(state.now);
+  const selectedEvents = currentDayId ? getSelectedEvents(currentDayId) : [];
+  const dayTimeline = currentDayId ? getDayTimelineState(currentDayId, state.now) : {
+    isToday: false,
+    currentEvents: [],
+    nextEvent: null
+  };
   const nextSelection = getGlobalNextSelectedEvent(state.now);
   const conflictIds = getConflictIds(selectedEvents);
-  const activeDay = getDay(state.activeDayId);
-  const dayLabel = activeDay?.label ?? state.activeDayId;
   const currentEvent = dayTimeline.currentEvents[0] ?? null;
 
   const currentCard = currentEvent
@@ -628,8 +664,8 @@ function renderOverview() {
     : `
       <article class="overview-card">
         <p class="card-label">${escapeHtml(state.config.ui.cards.current)}</p>
-        <h3 class="card-title">${escapeHtml(dayTimeline.isToday ? getEmptyState("currentNoneToday") : formatMessage(getEmptyState("currentNoneOtherDay"), { dayLabelLower: dayLabel.toLowerCase() }))}</h3>
-        <p class="card-copy">${escapeHtml(dayTimeline.isToday ? getEmptyState("currentNoneTodayCopy") : getEmptyState("currentNoneOtherDayCopy"))}</p>
+        <h3 class="card-title">${escapeHtml(getEmptyState("currentNoneToday"))}</h3>
+        <p class="card-copy">${escapeHtml(getEmptyState("currentNoneTodayCopy"))}</p>
       </article>
     `;
 
@@ -655,7 +691,32 @@ function renderOverview() {
     <span class="summary-pill is-muted">${escapeHtml(state.planSource)}</span>
   `;
 
+  renderTypeFilters();
   refs.overviewCards.innerHTML = `${currentCard}${nextCard}`;
+}
+
+function renderTypeFilters() {
+  const filterButtons = state.config.schedule.types
+    .map((type) => `
+      <button
+        class="chip type-filter-button ${state.activeTypeFilterIds.has(type.id) ? "is-active" : ""}"
+        type="button"
+        data-type-filter-id="${type.id}"
+      >
+        ${escapeHtml(type.label)}
+      </button>
+    `)
+    .join("");
+
+  const resetButton = state.activeTypeFilterIds.size
+    ? `
+      <button class="chip type-filter-button is-danger" type="button" data-clear-type-filter>
+        × ${escapeHtml(state.config.ui.labels.clearTypeFilter)}
+      </button>
+    `
+    : "";
+
+  refs.typeFilters.innerHTML = `${filterButtons}${resetButton}`;
 }
 
 function buildOverviewCard({ label, event, timeText, copyText }) {
@@ -692,6 +753,47 @@ function renderPlanActions() {
   const planCode = encodePlan(state.selectedEventIds);
   refs.shareCode.value = planCode;
   refs.shareLink.value = buildShareLink(planCode);
+  syncModalBodyState();
+}
+
+function renderEventBrowser() {
+  const hasMultipleEvents = state.catalog.events.length > 1;
+  refs.eventBrowserButton.hidden = !hasMultipleEvents;
+  refs.eventBrowserButton.setAttribute("aria-expanded", String(state.eventBrowserOpen));
+  refs.eventBrowserBackdrop.hidden = !state.eventBrowserOpen;
+  refs.eventBrowserPanel.hidden = !state.eventBrowserOpen;
+  refs.eventBrowserButton.textContent = state.config.ui.labels.eventBrowserButton;
+
+  if (!hasMultipleEvents) {
+    refs.eventBrowserContent.innerHTML = "";
+    syncModalBodyState();
+    return;
+  }
+
+  const todayKey = getPragueTodayDateKey();
+  refs.eventBrowserContent.innerHTML = state.catalog.events
+    .map((eventEntry) => {
+      const isActive = eventEntry.slug === state.currentEventSlug;
+      const statusBadge = buildCatalogEventBadge(eventEntry, todayKey);
+      return `
+        <button
+          class="event-browser-item ${isActive ? "is-active" : ""}"
+          type="button"
+          data-open-event-slug="${escapeHtml(eventEntry.slug)}"
+        >
+          <div class="event-browser-title-row">
+            <div>
+              <h3 class="event-browser-title">${escapeHtml(eventEntry.label)}</h3>
+              <p class="event-browser-meta">${escapeHtml(formatCatalogEventDateRange(eventEntry))}</p>
+            </div>
+            ${statusBadge}
+          </div>
+          ${eventEntry.summary ? `<p class="event-browser-copy">${escapeHtml(eventEntry.summary)}</p>` : ""}
+        </button>
+      `;
+    })
+    .join("");
+
   syncModalBodyState();
 }
 
@@ -758,14 +860,27 @@ function renderSchedule() {
   const selectedForDay = getSelectedEvents(state.activeDayId);
   const conflictIds = getConflictIds(selectedForDay);
   const dayTimeline = getDayTimelineState(state.activeDayId, state.now);
-  const dayEvents = getEventsForDay(state.activeDayId);
+  const dayEvents = getVisibleEventsForDay(state.activeDayId);
+  const visibleVenues = getVisibleVenuesForDay(state.activeDayId);
+  const scheduleWindow = getDayScheduleWindow(state.activeDayId);
+
+  if (!dayEvents.length || !visibleVenues.length || !scheduleWindow) {
+    refs.scheduleContent.innerHTML = `
+      <div class="empty-state">
+        <h3 class="itinerary-title">Pro tenhle filtr tu nic není</h3>
+        <p class="itinerary-subcopy">Zkus jinou kategorii nebo reset filtru.</p>
+      </div>
+    `;
+    return;
+  }
+
   const currentMinutes = state.now.hour * 60 + state.now.minute;
-  const shouldShowCurrentLine = dayTimeline.isToday && isMinuteWithinSchedule(currentMinutes);
+  const shouldShowCurrentLine = dayTimeline.isToday && isMinuteWithinSchedule(currentMinutes, scheduleWindow);
   const currentLineMarkup = shouldShowCurrentLine
     ? `
       <div
         class="schedule-current-line"
-        style="grid-column: 2 / ${state.config.schedule.venues.length + 2}; grid-row: 2; margin-top: ${getTimelineOffset(currentMinutes)}px;"
+        style="grid-column: 2 / ${visibleVenues.length + 2}; grid-row: 2; margin-top: ${getTimelineOffset(currentMinutes, scheduleWindow.startMinutes)}px;"
       >
         <span class="schedule-current-line-label">${escapeHtml(state.now.timeString)}</span>
       </div>
@@ -774,13 +889,13 @@ function renderSchedule() {
 
   refs.scheduleContent.innerHTML = `
     <div class="schedule-board-scroll">
-      <div class="schedule-board" style="--timeline-height: ${state.config.timelineHeight}px; --venue-count: ${state.config.schedule.venues.length};">
+      <div class="schedule-board" style="--timeline-height: ${getTimelineRangeHeight(scheduleWindow)}px; --venue-count: ${visibleVenues.length};">
         <div class="schedule-axis-head" style="grid-column: 1; grid-row: 1;">
           <h3 class="venue-heading">${escapeHtml(state.config.ui.labels.scheduleTime)}</h3>
-          <p class="venue-note">${escapeHtml(state.config.ui.labels.scheduleTimeNote)}</p>
+          <p class="venue-note">${escapeHtml(formatScheduleWindowNote(scheduleWindow))}</p>
         </div>
 
-        ${state.config.schedule.venues
+        ${visibleVenues
           .map((venue, index) => {
             const venueEvents = dayEvents.filter((event) => event.venueId === venue.id);
 
@@ -794,12 +909,12 @@ function renderSchedule() {
           .join("")}
 
         <div class="schedule-axis-track" style="grid-column: 1; grid-row: 2;">
-          ${buildScheduleTimeMarkers()}
+          ${buildScheduleTimeMarkers(scheduleWindow)}
         </div>
 
         ${currentLineMarkup}
 
-        ${state.config.schedule.venues
+        ${visibleVenues
           .map((venue, index) => {
             const venueEvents = dayEvents.filter((event) => event.venueId === venue.id);
 
@@ -837,7 +952,7 @@ function renderSchedule() {
                         tabindex="0"
                         role="button"
                         aria-label="${escapeHtml(getAria("openEventDetail", { title: event.title }))}"
-                        style="--event-color: var(${escapeHtml(type.colorVar)}); top: ${getTimelineOffset(event.startMinutes)}px; height: ${getTimelineHeight(event.durationMinutes)}px;"
+                        style="--event-color: var(${escapeHtml(type.colorVar)}); top: ${getTimelineOffset(event.startMinutes, scheduleWindow.startMinutes)}px; height: ${getTimelineHeight(event.durationMinutes)}px;"
                       >
                         <button
                           class="event-toggle ${selected ? "is-active" : ""}"
@@ -941,15 +1056,16 @@ function renderEventDetail() {
   syncModalBodyState();
 }
 
-function buildScheduleTimeMarkers() {
+function buildScheduleTimeMarkers(scheduleWindow) {
   const markers = [];
+  const firstMarker = Math.floor(scheduleWindow.startMinutes / 30) * 30;
 
-  for (let minutes = state.config.scheduleStartMinutes; minutes <= state.config.scheduleEndMinutes; minutes += 60) {
-    const position = getTimelineOffset(minutes);
+  for (let minutes = firstMarker; minutes <= scheduleWindow.endMinutes; minutes += 30) {
+    const position = getTimelineOffset(minutes, scheduleWindow.startMinutes);
     const markerClass =
-      minutes === state.config.scheduleStartMinutes
+      minutes === firstMarker
         ? "schedule-time-marker is-start"
-        : minutes === state.config.scheduleEndMinutes
+        : minutes + 30 > scheduleWindow.endMinutes
           ? "schedule-time-marker is-end"
           : "schedule-time-marker";
 
@@ -978,8 +1094,55 @@ function handleDayTabClick(event) {
   render();
 }
 
-function handleEventSwitcherChange(event) {
-  const selectedSlug = event.target.value;
+function handleTypeFilterClick(event) {
+  const clearButton = event.target.closest("[data-clear-type-filter]");
+  if (clearButton) {
+    state.activeTypeFilterIds = new Set();
+    render();
+    return;
+  }
+
+  const filterButton = event.target.closest("[data-type-filter-id]");
+  if (!filterButton) {
+    return;
+  }
+
+  const { typeFilterId } = filterButton.dataset;
+  const nextFilters = new Set(state.activeTypeFilterIds);
+  if (nextFilters.has(typeFilterId)) {
+    nextFilters.delete(typeFilterId);
+  } else {
+    nextFilters.add(typeFilterId);
+  }
+  state.activeTypeFilterIds = nextFilters;
+  render();
+}
+
+function handleEventBrowserToggle() {
+  state.eventBrowserOpen = !state.eventBrowserOpen;
+  if (state.eventBrowserOpen) {
+    state.planActionsOpen = false;
+    state.activeEventId = null;
+  }
+  render();
+}
+
+function handleEventBrowserPanelClick(event) {
+  const closeButton = event.target.closest("[data-close-event-browser]");
+  if (closeButton) {
+    closeEventBrowser();
+    return;
+  }
+
+  const eventButton = event.target.closest("[data-open-event-slug]");
+  if (!eventButton) {
+    return;
+  }
+
+  openCatalogEvent(eventButton.dataset.openEventSlug);
+}
+
+function openCatalogEvent(selectedSlug) {
   if (!state.catalog.events.some((eventEntry) => eventEntry.slug === selectedSlug)) {
     return;
   }
@@ -1026,6 +1189,11 @@ function handleEventDetailClick(event) {
 
 function handleDocumentKeydown(event) {
   if (event.key === "Escape") {
+    if (state.eventBrowserOpen) {
+      closeEventBrowser();
+      return;
+    }
+
     if (state.planActionsOpen) {
       closePlanActions();
       return;
@@ -1047,6 +1215,7 @@ function handlePlanActionsToggle() {
   state.planActionsOpen = !state.planActionsOpen;
   if (state.planActionsOpen) {
     state.activeEventId = null;
+    state.eventBrowserOpen = false;
   }
   render();
 }
@@ -1127,6 +1296,7 @@ function openEventDetail(eventId) {
   }
 
   state.planActionsOpen = false;
+  state.eventBrowserOpen = false;
   state.activeEventId = eventId;
   render();
 }
@@ -1149,8 +1319,17 @@ function closePlanActions() {
   render();
 }
 
+function closeEventBrowser() {
+  if (!state.eventBrowserOpen) {
+    return;
+  }
+
+  state.eventBrowserOpen = false;
+  render();
+}
+
 function syncModalBodyState() {
-  document.body.classList.toggle("has-modal", Boolean(state.activeEventId || state.planActionsOpen));
+  document.body.classList.toggle("has-modal", Boolean(state.activeEventId || state.planActionsOpen || state.eventBrowserOpen));
 }
 
 function persistCurrentPlan() {
@@ -1279,6 +1458,35 @@ function getEventsForDay(dayId) {
   return state.config.schedule.events
     .filter((event) => event.dayId === dayId)
     .sort((a, b) => a.startMinutes - b.startMinutes || a.endMinutes - b.endMinutes);
+}
+
+function getVisibleEventsForDay(dayId) {
+  const dayEvents = getEventsForDay(dayId);
+  if (!state.activeTypeFilterIds.size) {
+    return dayEvents;
+  }
+
+  return dayEvents.filter((event) => state.activeTypeFilterIds.has(event.type));
+}
+
+function getVisibleVenuesForDay(dayId) {
+  const usedVenueIds = new Set(getVisibleEventsForDay(dayId).map((event) => event.venueId));
+  return state.config.schedule.venues.filter((venue) => usedVenueIds.has(venue.id));
+}
+
+function getDayScheduleWindow(dayId) {
+  const dayEvents = getVisibleEventsForDay(dayId);
+  if (!dayEvents.length) {
+    return null;
+  }
+
+  const firstStart = Math.min(...dayEvents.map((event) => event.startMinutes));
+  const lastEnd = Math.max(...dayEvents.map((event) => event.endMinutes));
+
+  return {
+    startMinutes: firstStart,
+    endMinutes: lastEnd
+  };
 }
 
 function getSelectedEvents(dayId) {
@@ -1423,6 +1631,17 @@ function getCookie(name) {
   return decodeURIComponent(value);
 }
 
+function getPragueTodayDateKey() {
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Prague",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  });
+
+  return formatter.format(new Date());
+}
+
 function getAppNow() {
   const parts = Object.fromEntries(
     state.config.nowFormatter
@@ -1447,6 +1666,24 @@ function getAppNow() {
     dateKey: toDateKey({ year, month, day }),
     timeString: `${padNumber(hour)}:${padNumber(minute)}`
   };
+}
+
+function formatCatalogEventDateRange(eventEntry) {
+  const start = parseDateKey(eventEntry.startsOn);
+  const end = parseDateKey(eventEntry.endsOn);
+  return `${padNumber(start.day)}.${padNumber(start.month)}. - ${padNumber(end.day)}.${padNumber(end.month)}.`;
+}
+
+function buildCatalogEventBadge(eventEntry, todayKey) {
+  if (eventEntry.startsOn <= todayKey && todayKey <= eventEntry.endsOn) {
+    return `<span class="chip is-highlight">${escapeHtml(getMessage("currentEventBadge"))}</span>`;
+  }
+
+  if (eventEntry.startsOn > todayKey) {
+    return `<span class="chip">${escapeHtml(getMessage("upcomingEventBadge"))}</span>`;
+  }
+
+  return "";
 }
 
 function getCurrentFestivalDayId(now = state.now) {
@@ -1491,16 +1728,24 @@ function formatMinuteLabel(minutes) {
   return `${padNumber(hours)}:${padNumber(minutesPart)}`;
 }
 
-function getTimelineOffset(minutes) {
-  return Math.max(0, minutes - state.config.scheduleStartMinutes) * TIMELINE_MINUTE_HEIGHT;
+function getTimelineOffset(minutes, startMinutes = state.config.scheduleStartMinutes) {
+  return TIMELINE_EDGE_PADDING + Math.max(0, minutes - startMinutes) * TIMELINE_MINUTE_HEIGHT;
 }
 
 function getTimelineHeight(durationMinutes) {
   return Math.max(durationMinutes, 15) * TIMELINE_MINUTE_HEIGHT;
 }
 
-function isMinuteWithinSchedule(minutes) {
-  return minutes >= state.config.scheduleStartMinutes && minutes <= state.config.scheduleEndMinutes;
+function getTimelineRangeHeight(scheduleWindow) {
+  return Math.max(scheduleWindow.endMinutes - scheduleWindow.startMinutes, 30) * TIMELINE_MINUTE_HEIGHT + TIMELINE_EDGE_PADDING * 2;
+}
+
+function isMinuteWithinSchedule(minutes, scheduleWindow) {
+  return minutes >= scheduleWindow.startMinutes && minutes <= scheduleWindow.endMinutes;
+}
+
+function formatScheduleWindowNote(scheduleWindow) {
+  return `${formatMinuteLabel(scheduleWindow.startMinutes)} - ${formatMinuteLabel(scheduleWindow.endMinutes)}`;
 }
 
 function parseTime(timeString) {
