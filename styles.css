@@ -140,7 +140,7 @@ button {
 
 .toolbar-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 16px;
   align-items: start;
 }
@@ -158,6 +158,17 @@ button {
 .toolbar-group-actions {
   justify-items: end;
   align-content: start;
+}
+
+.toolbar-select {
+  min-width: min(220px, 100%);
+}
+
+.toolbar-action-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 .toolbar-label,

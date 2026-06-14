@@ -1,0 +1,10 @@
+{
+  "defaultEventSlug": "blavicon",
+  "events": [
+    {
+      "slug": "blavicon",
+      "label": "Blavicon",
+      "dataset": "./data/blavicon/event.json"
+    }
+  ]
+}
