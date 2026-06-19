@@ -38,7 +38,9 @@
       "eventBrowserButton": "Prohlížet další události",
       "eventBrowserTitle": "Vyber akci",
       "eventBrowserCopy": "Přepni se na jinou akci z katalogu.",
-      "openCurrentEvent": "Otevřít"
+      "openCurrentEvent": "Otevřít",
+      "addToPlanShort": "Přidat do plánu",
+      "removeFromPlanShort": "Odebrat z plánu"
     },
     "sections": {
       "overviewKicker": "Rychlý přehled",

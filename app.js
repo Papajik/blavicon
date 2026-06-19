@@ -37,6 +37,8 @@ const DEFAULT_UI = {
     eventBrowserTitle: "Choose event",
     eventBrowserCopy: "",
     openCurrentEvent: "Open",
+    addToPlanShort: "Add to plan",
+    removeFromPlanShort: "Remove from plan",
     clearTypeFilter: "Reset filter"
   },
   sections: {
@@ -182,6 +184,7 @@ const state = {
 let noticeTimer = null;
 let clockTimer = null;
 let scheduleScrollTeardown = null;
+let scheduleScrollLeft = 0;
 
 initialize().catch((error) => {
   console.error(error);
@@ -918,6 +921,11 @@ function renderItinerary() {
 }
 
 function renderSchedule() {
+  const previousScrollEl = refs.scheduleContent.querySelector(".schedule-board-scroll");
+  if (previousScrollEl) {
+    scheduleScrollLeft = previousScrollEl.scrollLeft;
+  }
+
   const selectedEvents = new Set(state.selectedEventIds);
   const selectedForDay = getSelectedEvents(state.activeDayId);
   const conflictIds = getConflictIds(selectedForDay);
@@ -1059,7 +1067,10 @@ function setupScheduleMobileVenueIndicator() {
     return;
   }
 
+  scrollEl.scrollLeft = scheduleScrollLeft;
+
   const syncLabel = () => {
+    scheduleScrollLeft = scrollEl.scrollLeft;
     const scrollRect = scrollEl.getBoundingClientRect();
     const axisRect = axisHeadEl.getBoundingClientRect();
     const targetLeft = scrollRect.left + axisRect.width + 8;
@@ -1144,8 +1155,9 @@ function renderEventDetail() {
           type="button"
           data-event-id="${activeEvent.id}"
           aria-pressed="${String(selected)}"
+          aria-label="${escapeHtml(selected ? getAria("removeFromPlan", { title: activeEvent.title }) : getAria("addToPlan", { title: activeEvent.title }))}"
         >
-          ${escapeHtml(selected ? getAria("removeFromPlan", { title: activeEvent.title }) : getAria("addToPlan", { title: activeEvent.title }))}
+          ${escapeHtml(selected ? state.config.ui.labels.removeFromPlanShort : state.config.ui.labels.addToPlanShort)}
         </button>
         <button class="ghost-button" type="button" data-close-event-detail>${escapeHtml(state.config.ui.labels.close)}</button>
       </div>

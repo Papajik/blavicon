@@ -716,7 +716,7 @@ button {
 
 .schedule-content {
   display: block;
-  overflow: hidden;
+  overflow: visible;
   width: 100%;
   max-width: 100%;
   min-width: 0;
@@ -1186,7 +1186,7 @@ code {
 
   .schedule-mobile-venue-indicator {
     position: sticky;
-    top: 8px;
+    top: 0;
     z-index: 7;
     display: block;
     margin-bottom: 8px;
