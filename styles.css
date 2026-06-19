@@ -722,6 +722,10 @@ button {
   min-width: 0;
 }
 
+.schedule-mobile-venue-indicator {
+  display: none;
+}
+
 .venue-heading {
   margin: 0;
   font-size: 1.2rem;
@@ -911,11 +915,20 @@ button {
   gap: 4px;
 }
 
+.event-card.is-compact {
+  padding: 8px 10px 9px 12px;
+}
+
 .event-card.is-tiny {
   padding: 5px 8px 6px 12px;
   gap: 3px;
 }
 
+.event-card.is-tiny .event-header {
+  padding-right: 30px;
+}
+
+.event-card.is-compact .event-meta,
 .event-card.is-short .event-copy,
 .event-card.is-short .event-meta {
   display: none;
@@ -923,21 +936,31 @@ button {
 
 .event-header {
   padding-right: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
 }
 
 .event-time {
-  display: inline-flex;
-  padding: 4px 8px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(53, 45, 35, 0.12);
-  font-size: 0.74rem;
+  flex: 0 0 auto;
+  font-size: 0.72rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  color: var(--surface-muted);
+  white-space: nowrap;
+}
+
+.event-body.is-hidden {
+  display: none;
 }
 
 .event-title {
-  margin-right: 26px;
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-right: 0;
   font-size: 0.9rem;
   line-height: 1.2;
   display: -webkit-box;
@@ -946,13 +969,22 @@ button {
   -webkit-box-orient: vertical;
 }
 
+.event-title.is-inline {
+  -webkit-line-clamp: 1;
+}
+
 .event-subtitle {
+  margin-top: 4px;
   margin-right: 26px;
   font-size: 0.76rem;
   display: -webkit-box;
   overflow: hidden;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+
+.event-card.is-compact .event-subtitle {
+  -webkit-line-clamp: 1;
 }
 
 .event-copy {
@@ -1152,14 +1184,52 @@ code {
     margin-bottom: 8px;
   }
 
+  .schedule-mobile-venue-indicator {
+    position: sticky;
+    top: 8px;
+    z-index: 7;
+    display: block;
+    margin-bottom: 8px;
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--line);
+    background: rgba(255, 250, 240, 0.96);
+    box-shadow: var(--shadow);
+  }
+
+  .schedule-mobile-venue-label {
+    display: block;
+    font-size: 0.92rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .schedule-board-scroll {
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 80px;
+  }
+
   .schedule-board {
-    grid-template-columns: 72px repeat(var(--venue-count), minmax(176px, 176px));
+    grid-template-columns: 72px repeat(var(--venue-count), minmax(calc(100vw - 112px), calc(100vw - 112px)));
+    grid-template-rows: var(--timeline-height);
     gap: 8px;
   }
 
   .schedule-axis-head,
   .schedule-venue-head {
-    padding: 12px;
+    display: none;
+  }
+
+  .schedule-venue-head,
+  .schedule-venue-track {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  .schedule-axis-track,
+  .schedule-venue-track,
+  .schedule-current-line {
+    grid-row: 1 !important;
   }
 
   .venue-heading {
@@ -1184,8 +1254,16 @@ code {
   }
 
   .event-title {
-    font-size: 0.8rem;
-    -webkit-line-clamp: 2;
+    font-size: 0.84rem;
+    -webkit-line-clamp: 3;
+  }
+
+  .event-title.is-inline {
+    -webkit-line-clamp: 1;
+  }
+
+  .event-subtitle {
+    font-size: 0.74rem;
   }
 
   .event-meta {

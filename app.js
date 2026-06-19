@@ -181,6 +181,7 @@ const state = {
 
 let noticeTimer = null;
 let clockTimer = null;
+let scheduleScrollTeardown = null;
 
 initialize().catch((error) => {
   console.error(error);
@@ -745,6 +746,37 @@ function getEventTitleParts(event) {
   };
 }
 
+function getScheduleCardFlags(event) {
+  const durationMinutes = event.durationMinutes ?? 0;
+  return {
+    isTiny: durationMinutes <= 15,
+    isShort: durationMinutes <= 30,
+    isCompact: durationMinutes <= 45
+  };
+}
+
+function buildScheduleMeta(type, { selected, isNext, isConflict, isCompact }) {
+  if (isCompact) {
+    return "";
+  }
+
+  let statusBadge = "";
+  if (isConflict) {
+    statusBadge = `<span class="chip is-warning">${escapeHtml(getBadge("conflict"))}</span>`;
+  } else if (isNext) {
+    statusBadge = `<span class="chip">${escapeHtml(getBadge("next"))}</span>`;
+  } else if (selected) {
+    statusBadge = `<span class="chip is-highlight">${escapeHtml(getBadge("selected"))}</span>`;
+  }
+
+  return `
+    <div class="event-meta">
+      <span class="type-pill">${escapeHtml(type.label)}</span>
+      ${statusBadge}
+    </div>
+  `;
+}
+
 function buildOverviewCard({ label, event, timeText, copyText }) {
   const { title, subtitle } = getEventTitleParts(event);
   return `
@@ -918,6 +950,9 @@ function renderSchedule() {
     : "";
 
   refs.scheduleContent.innerHTML = `
+    <div class="schedule-mobile-venue-indicator" aria-hidden="true">
+      <span class="schedule-mobile-venue-label">${escapeHtml(visibleVenues[0]?.label ?? "")}</span>
+    </div>
     <div class="schedule-board-scroll">
       <div class="schedule-board" style="--timeline-height: ${getTimelineRangeHeight(scheduleWindow)}px; --venue-count: ${visibleVenues.length};">
         <div class="schedule-axis-head" style="grid-column: 1; grid-row: 1;">
@@ -957,28 +992,16 @@ function renderSchedule() {
                 ${venueEvents
                   .map((event) => {
                     const { title, subtitle } = getEventTitleParts(event);
+                    const { isTiny, isShort, isCompact } = getScheduleCardFlags(event);
                     const selected = selectedEvents.has(event.id);
                     const type = getType(event.type) ?? state.config.schedule.types[0];
                     const isCurrent = dayTimeline.currentEvents.some((currentEvent) => currentEvent.id === event.id);
                     const isNext = dayTimeline.nextEvent?.id === event.id;
                     const isConflict = conflictIds.has(event.id);
-                    const badges = [];
-
-                    if (isNext) {
-                      badges.push(`<span class="chip">${escapeHtml(getBadge("next"))}</span>`);
-                    }
-
-                    if (selected) {
-                      badges.push(`<span class="chip is-highlight">${escapeHtml(getBadge("selected"))}</span>`);
-                    }
-
-                    if (isConflict) {
-                      badges.push(`<span class="chip is-warning">${escapeHtml(getBadge("conflict"))}</span>`);
-                    }
 
                     return `
                       <article
-                        class="event-card ${selected ? "is-selected" : ""} ${isConflict ? "is-conflict" : ""} ${isCurrent ? "is-current" : ""} ${event.durationMinutes <= 30 ? "is-short" : ""} ${event.durationMinutes <= 15 ? "is-tiny" : ""}"
+                        class="event-card ${selected ? "is-selected" : ""} ${isConflict ? "is-conflict" : ""} ${isCurrent ? "is-current" : ""} ${isCompact ? "is-compact" : ""} ${isShort ? "is-short" : ""} ${isTiny ? "is-tiny" : ""}"
                         data-open-event-id="${event.id}"
                         tabindex="0"
                         role="button"
@@ -997,18 +1020,15 @@ function renderSchedule() {
                         </button>
 
                         <div class="event-header">
+                          <h4 class="${isTiny ? "event-title is-inline" : "event-title"}">${escapeHtml(title)}</h4>
                           <span class="event-time">${escapeHtml(formatTimeRange(event))}</span>
                         </div>
 
-                        <div>
-                          <h4 class="event-title">${escapeHtml(title)}</h4>
-                          ${subtitle ? `<p class="event-subtitle">${escapeHtml(subtitle)}</p>` : ""}
+                        <div class="${isTiny ? "event-body is-hidden" : "event-body"}">
+                          ${subtitle && !isShort ? `<p class="event-subtitle">${escapeHtml(subtitle)}</p>` : ""}
                         </div>
 
-                        <div class="event-meta">
-                          <span class="type-pill">${escapeHtml(type.label)}</span>
-                          ${badges.join("")}
-                        </div>
+                        ${buildScheduleMeta(type, { selected, isNext, isConflict, isCompact })}
                       </article>
                     `;
                   })
@@ -1020,6 +1040,54 @@ function renderSchedule() {
       </div>
     </div>
   `;
+
+  setupScheduleMobileVenueIndicator();
+}
+
+function setupScheduleMobileVenueIndicator() {
+  if (scheduleScrollTeardown) {
+    scheduleScrollTeardown();
+    scheduleScrollTeardown = null;
+  }
+
+  const scrollEl = refs.scheduleContent.querySelector(".schedule-board-scroll");
+  const labelEl = refs.scheduleContent.querySelector(".schedule-mobile-venue-label");
+  const axisHeadEl = refs.scheduleContent.querySelector(".schedule-axis-head");
+  const venueTrackEls = Array.from(refs.scheduleContent.querySelectorAll(".schedule-venue-track"));
+
+  if (!scrollEl || !labelEl || !axisHeadEl || !venueTrackEls.length) {
+    return;
+  }
+
+  const syncLabel = () => {
+    const scrollRect = scrollEl.getBoundingClientRect();
+    const axisRect = axisHeadEl.getBoundingClientRect();
+    const targetLeft = scrollRect.left + axisRect.width + 8;
+
+    let activeLabel = venueTrackEls[0].getAttribute("aria-labelledby") ?? "";
+    let closestDistance = Number.POSITIVE_INFINITY;
+
+    for (const venueTrackEl of venueTrackEls) {
+      const labelledBy = venueTrackEl.getAttribute("aria-labelledby") ?? "";
+      const heading = labelledBy ? document.getElementById(labelledBy)?.querySelector(".venue-heading")?.textContent ?? "" : "";
+      const distance = Math.abs(venueTrackEl.getBoundingClientRect().left - targetLeft);
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        activeLabel = heading;
+      }
+    }
+
+    labelEl.textContent = activeLabel;
+  };
+
+  scrollEl.addEventListener("scroll", syncLabel, { passive: true });
+  window.addEventListener("resize", syncLabel);
+  syncLabel();
+
+  scheduleScrollTeardown = () => {
+    scrollEl.removeEventListener("scroll", syncLabel);
+    window.removeEventListener("resize", syncLabel);
+  };
 }
 
 function renderEventDetail() {
