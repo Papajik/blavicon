@@ -16,11 +16,14 @@
   --radius-lg: 28px;
   --radius-md: 18px;
   --radius-sm: 12px;
-  --type-concert: #0f8b5f;
-  --type-performance: #2b6cb0;
+  --type-concert: #729fcf;
+  --type-performance: #ff3838;
+  --type-theater: #bbe33d;
   --type-talk: #b93274;
+  --type-other: #ee9ae4;
+  --type-parade: #ff860d;
   --type-tabletop: #7b3db8;
-  --type-workshop: #d97706;
+  --type-workshop: #f0c400;
 }
 
 *,
@@ -432,6 +435,15 @@ button {
   font-size: 1.25rem;
 }
 
+.card-subtitle,
+.itinerary-subtitle,
+.event-subtitle,
+.event-detail-subtitle {
+  margin: 4px 0 0;
+  color: var(--surface-muted);
+  line-height: 1.4;
+}
+
 .card-copy {
   margin: 0;
   color: var(--surface-muted);
@@ -690,6 +702,10 @@ button {
   font-size: 1.06rem;
 }
 
+.itinerary-subtitle {
+  font-size: 0.94rem;
+}
+
 .itinerary-subcopy,
 .venue-note,
 .event-copy {
@@ -930,6 +946,15 @@ button {
   -webkit-box-orient: vertical;
 }
 
+.event-subtitle {
+  margin-right: 26px;
+  font-size: 0.76rem;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
 .event-copy {
   font-size: 0.76rem;
 }
@@ -984,6 +1009,10 @@ button {
 
 .event-detail-title {
   font-size: 1.35rem;
+}
+
+.event-detail-subtitle {
+  font-size: 1rem;
 }
 
 .event-detail-meta {
@@ -1159,7 +1188,6 @@ code {
     -webkit-line-clamp: 2;
   }
 
-  .event-copy,
   .event-meta {
     display: none;
   }

@@ -719,7 +719,34 @@ function renderTypeFilters() {
   refs.typeFilters.innerHTML = `${filterButtons}${resetButton}`;
 }
 
+function getEventTitleParts(event) {
+  if (typeof event?.subtitle === "string" && event.subtitle.trim()) {
+    return {
+      title: typeof event.title === "string" ? event.title.trim() : "",
+      subtitle: event.subtitle.trim()
+    };
+  }
+
+  if (typeof event?.title !== "string") {
+    return { title: "", subtitle: "" };
+  }
+
+  const parts = event.title.split(" — ").map((part) => part.trim()).filter(Boolean);
+  if (parts.length >= 2) {
+    return {
+      title: parts[0],
+      subtitle: parts.slice(1).join(" — ")
+    };
+  }
+
+  return {
+    title: event.title.trim(),
+    subtitle: ""
+  };
+}
+
 function buildOverviewCard({ label, event, timeText, copyText }) {
+  const { title, subtitle } = getEventTitleParts(event);
   return `
     <article
       class="overview-card is-interactive"
@@ -729,7 +756,8 @@ function buildOverviewCard({ label, event, timeText, copyText }) {
       aria-label="${escapeHtml(getAria("openEventDetail", { title: event.title }))}"
     >
       <p class="card-label">${escapeHtml(label)}</p>
-      <h3 class="card-title">${escapeHtml(event.title)}</h3>
+      <h3 class="card-title">${escapeHtml(title)}</h3>
+      ${subtitle ? `<p class="card-subtitle">${escapeHtml(subtitle)}</p>` : ""}
       <p class="card-time">${escapeHtml(timeText)}</p>
       <p class="card-copy">${escapeHtml(copyText)}</p>
     </article>
@@ -816,6 +844,7 @@ function renderItinerary() {
     <div class="itinerary-list">
       ${selectedEvents
         .map((event) => {
+          const { title, subtitle } = getEventTitleParts(event);
           const badges = [];
 
           if (dayTimeline.currentEvents.some((currentEvent) => currentEvent.id === event.id)) {
@@ -840,7 +869,8 @@ function renderItinerary() {
             >
               <div class="itinerary-title-row">
                 <div>
-                  <h3 class="itinerary-title">${escapeHtml(event.title)}</h3>
+                  <h3 class="itinerary-title">${escapeHtml(title)}</h3>
+                  ${subtitle ? `<p class="itinerary-subtitle">${escapeHtml(subtitle)}</p>` : ""}
                   <p class="itinerary-subcopy">
                     ${escapeHtml(formatTimeRange(event))} • ${escapeHtml(getVenue(event.venueId)?.label ?? "")}
                   </p>
@@ -926,6 +956,7 @@ function renderSchedule() {
               >
                 ${venueEvents
                   .map((event) => {
+                    const { title, subtitle } = getEventTitleParts(event);
                     const selected = selectedEvents.has(event.id);
                     const type = getType(event.type) ?? state.config.schedule.types[0];
                     const isCurrent = dayTimeline.currentEvents.some((currentEvent) => currentEvent.id === event.id);
@@ -970,8 +1001,8 @@ function renderSchedule() {
                         </div>
 
                         <div>
-                          <h4 class="event-title">${escapeHtml(event.title)}</h4>
-                          <p class="event-copy">${escapeHtml(type.label)}</p>
+                          <h4 class="event-title">${escapeHtml(title)}</h4>
+                          ${subtitle ? `<p class="event-subtitle">${escapeHtml(subtitle)}</p>` : ""}
                         </div>
 
                         <div class="event-meta">
@@ -1008,6 +1039,7 @@ function renderEventDetail() {
   const dayTimeline = getDayTimelineState(activeEvent.dayId, state.now);
   const globalNextEventId = getGlobalNextSelectedEvent(state.now)?.event.id ?? null;
   const chips = [];
+  const { title, subtitle } = getEventTitleParts(activeEvent);
 
   if (selected) {
     chips.push(`<span class="chip is-highlight">${escapeHtml(getBadge("selected"))}</span>`);
@@ -1029,7 +1061,8 @@ function renderEventDetail() {
         ×
       </button>
       <p class="section-kicker">${escapeHtml(state.config.ui.labels.eventDetail)}</p>
-      <h3 id="event-detail-title" class="event-detail-title">${escapeHtml(activeEvent.title)}</h3>
+      <h3 id="event-detail-title" class="event-detail-title">${escapeHtml(title)}</h3>
+      ${subtitle ? `<p class="event-detail-subtitle">${escapeHtml(subtitle)}</p>` : ""}
       <p class="event-detail-meta">
         ${escapeHtml(formatDayLabel(activeEvent.dayId))} • ${escapeHtml(formatTimeRange(activeEvent))} • ${escapeHtml(getVenue(activeEvent.venueId)?.label ?? "")}
       </p>
